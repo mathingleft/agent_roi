@@ -806,10 +806,10 @@
             "trajectory_id": "t2_op_rescale_run2",
             "task_signature_key": "pytest|assertionerror|op_rescale",
             "agent_role": "",
-            "helpful_count": 0,
+            "helpful_count": 1,
             "harmful_count": 0,
             "created_at": "2026-06-20T13:12:54.293297+00:00",
-            "updated_at": "2026-06-20T13:12:54.293322+00:00",
+            "updated_at": "2026-06-20T17:26:56.220780+00:00",
             "metadata": {}
           }
         ],
@@ -853,6 +853,45 @@
               "created_at": "2026-06-20T13:12:54.277610+00:00",
               "updated_at": "2026-06-20T13:12:54.277650+00:00",
               "metadata": {}
+            },
+            {
+              "id": "20e70caaf71a",
+              "entry_type": "prompt_patch",
+              "content": "Run only the single target test to confirm the failure, not the full test suite.",
+              "trajectory_id": "t2_op_rescale_run2",
+              "task_signature_key": "pytest|zerodivisionerror|op_rescale",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T17:26:56.197753+00:00",
+              "updated_at": "2026-06-20T17:26:56.197762+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "5bd90618443e",
+              "entry_type": "prompt_patch",
+              "content": "Signal completion with explicit confirmation status so downstream agents know whether to proceed.",
+              "trajectory_id": "t2_op_rescale_run2",
+              "task_signature_key": "pytest|zerodivisionerror|op_rescale",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T17:26:56.202194+00:00",
+              "updated_at": "2026-06-20T17:26:56.202203+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "b6e7723d2fe2",
+              "entry_type": "prompt_patch",
+              "content": "If you cannot access required files, report the access issue immediately rather than continuing.",
+              "trajectory_id": "t2_op_rescale_run2",
+              "task_signature_key": "pytest|zerodivisionerror|op_rescale",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T17:26:56.207113+00:00",
+              "updated_at": "2026-06-20T17:26:56.207128+00:00",
+              "metadata": {}
             }
           ],
           "patch_agent": [
@@ -893,6 +932,45 @@
               "harmful_count": 0,
               "created_at": "2026-06-20T13:12:54.284909+00:00",
               "updated_at": "2026-06-20T13:12:54.284934+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "400bfdd01999",
+              "entry_type": "prompt_patch",
+              "content": "Do not begin writing patches until the reproducer agent has confirmed the failure exists by running a failing test.",
+              "trajectory_id": "t2_op_rescale_run2",
+              "task_signature_key": "pytest|zerodivisionerror|op_rescale",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T17:26:56.173246+00:00",
+              "updated_at": "2026-06-20T17:26:56.173279+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "4dee83dd6372",
+              "entry_type": "prompt_patch",
+              "content": "Run only the specific target test first to confirm your fix works before running the full test suite.",
+              "trajectory_id": "t2_op_rescale_run2",
+              "task_signature_key": "pytest|zerodivisionerror|op_rescale",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T17:26:56.179502+00:00",
+              "updated_at": "2026-06-20T17:26:56.179528+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "90fad4aac1e1",
+              "entry_type": "prompt_patch",
+              "content": "If file access is blocked, immediately report the blocker rather than attempting workarounds that waste time.",
+              "trajectory_id": "t2_op_rescale_run2",
+              "task_signature_key": "pytest|zerodivisionerror|op_rescale",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T17:26:56.193222+00:00",
+              "updated_at": "2026-06-20T17:26:56.193255+00:00",
               "metadata": {}
             }
           ],
@@ -935,6 +1013,32 @@
               "created_at": "2026-06-20T13:12:54.291153+00:00",
               "updated_at": "2026-06-20T13:12:54.291177+00:00",
               "metadata": {}
+            },
+            {
+              "id": "999c58df9bbf",
+              "entry_type": "prompt_patch",
+              "content": "Only run the full test suite after first confirming the target test passes in isolation.",
+              "trajectory_id": "t2_op_rescale_run2",
+              "task_signature_key": "pytest|zerodivisionerror|op_rescale",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T17:26:56.211788+00:00",
+              "updated_at": "2026-06-20T17:26:56.211797+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "c60e7cb04076",
+              "entry_type": "prompt_patch",
+              "content": "If the target test has never been confirmed passing, do not proceed with full suite verification.",
+              "trajectory_id": "t2_op_rescale_run2",
+              "task_signature_key": "pytest|zerodivisionerror|op_rescale",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T17:26:56.216199+00:00",
+              "updated_at": "2026-06-20T17:26:56.216213+00:00",
+              "metadata": {}
             }
           ]
         },
@@ -962,10 +1066,10 @@
             "trajectory_id": "t2_op_rescale_run2",
             "task_signature_key": "pytest|assertionerror|op_rescale",
             "agent_role": "",
-            "helpful_count": 0,
+            "helpful_count": 1,
             "harmful_count": 0,
             "created_at": "2026-06-20T13:12:54.297479+00:00",
-            "updated_at": "2026-06-20T13:12:54.297504+00:00",
+            "updated_at": "2026-06-20T17:26:56.228766+00:00",
             "metadata": {
               "waste_type": "premature_full_suite",
               "severity": "high"
@@ -978,10 +1082,10 @@
             "trajectory_id": "t2_op_rescale_run2",
             "task_signature_key": "pytest|assertionerror|op_rescale",
             "agent_role": "",
-            "helpful_count": 2,
+            "helpful_count": 3,
             "harmful_count": 0,
             "created_at": "2026-06-20T13:12:54.299624+00:00",
-            "updated_at": "2026-06-20T13:12:54.303961+00:00",
+            "updated_at": "2026-06-20T17:26:56.232320+00:00",
             "metadata": {
               "waste_type": "premature_full_suite",
               "severity": "high"
@@ -994,12 +1098,28 @@
             "trajectory_id": "t2_op_rescale_run2",
             "task_signature_key": "pytest|assertionerror|op_rescale",
             "agent_role": "",
-            "helpful_count": 0,
+            "helpful_count": 1,
             "harmful_count": 0,
             "created_at": "2026-06-20T13:12:54.306125+00:00",
-            "updated_at": "2026-06-20T13:12:54.306148+00:00",
+            "updated_at": "2026-06-20T17:26:56.236007+00:00",
             "metadata": {
               "waste_type": "bad_routing",
+              "severity": "high"
+            }
+          },
+          {
+            "id": "1842f1bace47",
+            "entry_type": "waste_pattern",
+            "content": "Full test suite run at T=21.6s by 'patch_agent' before target test confirmed passing (never).",
+            "trajectory_id": "t2_op_rescale_run2",
+            "task_signature_key": "pytest|zerodivisionerror|op_rescale",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T17:26:56.224899+00:00",
+            "updated_at": "2026-06-20T17:26:56.224908+00:00",
+            "metadata": {
+              "waste_type": "premature_full_suite",
               "severity": "high"
             }
           }
@@ -1016,6 +1136,19 @@
             "harmful_count": 0,
             "created_at": "2026-06-20T13:12:54.308584+00:00",
             "updated_at": "2026-06-20T13:12:54.308603+00:00",
+            "metadata": {}
+          },
+          {
+            "id": "e240e596f06f",
+            "entry_type": "high_roi_context",
+            "content": "Judge insight: The swarm failed completely due to severe access control issues - 5 blocked actions prevented agents from reading the necessary files, resulting in no patch and a failed target test despite 132 seconds of wall time.",
+            "trajectory_id": "t2_op_rescale_run2",
+            "task_signature_key": "pytest|zerodivisionerror|op_rescale",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T17:26:56.239532+00:00",
+            "updated_at": "2026-06-20T17:26:56.239539+00:00",
             "metadata": {}
           }
         ],
@@ -1038,6 +1171,26 @@
             "harmful_count": 0,
             "created_at": "2026-06-20T13:12:54.316324+00:00",
             "updated_at": "2026-06-20T13:12:54.316362+00:00",
+            "metadata": {}
+          },
+          {
+            "id": "62247d61789d",
+            "entry_type": "episodic_record",
+            "content": {
+              "run_id": "t2_op_re_pytest_zerodivisi_run017_113cc0",
+              "roi_score": 0.348,
+              "wall_time_sec": 131.966,
+              "tokens": 3090,
+              "target_pass": false,
+              "retrospective_snippet": "# Retrospective: rescale_to_unit ZeroDivisionError Fix\n\n## What Went Well\n- Full test suite passed (3/3 runs), indicating no regressions were introduced\n- Token usage was relatively efficient at 3,090 tokens\n- Basic infrastructure worked (test execution, timing)\n\n## Key Waste Patterns and Their Impa"
+            },
+            "trajectory_id": "t2_op_rescale_run2",
+            "task_signature_key": "pytest|zerodivisionerror|op_rescale",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T17:26:56.243198+00:00",
+            "updated_at": "2026-06-20T17:26:56.243205+00:00",
             "metadata": {}
           }
         ]
@@ -2316,6 +2469,19 @@
         "harmful_count": 0,
         "created_at": "2026-06-20T13:26:50.675850+00:00",
         "updated_at": "2026-06-20T13:26:50.675856+00:00",
+        "metadata": {}
+      },
+      {
+        "id": "e240e596f06f",
+        "entry_type": "high_roi_context",
+        "content": "Judge insight: The swarm failed completely due to severe access control issues - 5 blocked actions prevented agents from reading the necessary files, resulting in no patch and a failed target test despite 132 seconds of wall time.",
+        "trajectory_id": "t2_op_rescale_run2",
+        "task_signature_key": "pytest|zerodivisionerror|op_rescale",
+        "agent_role": "",
+        "helpful_count": 0,
+        "harmful_count": 0,
+        "created_at": "2026-06-20T17:26:56.239532+00:00",
+        "updated_at": "2026-06-20T17:26:56.239539+00:00",
         "metadata": {}
       }
     ]
