@@ -128,11 +128,18 @@ def _compute_raw_metrics(tracer: SwarmTracer, run_id: str) -> RunMetrics:
 
 def _compute_formula_roi(metrics: RunMetrics, waste_events: list[WasteEvent]) -> float:
     """Reference formula — transparent and configurable."""
+    # full_suite_passed logically subsumes target_test_passed:
+    # if the whole suite passes, the target test must have passed too.
+    # Guard against tracer mis-classification (e.g. test scope detection noise).
+    target_passed = metrics.target_test_passed or metrics.full_suite_passed
+
     success = 0.0
-    if metrics.target_test_passed:
-        success += 100
-    if metrics.full_suite_passed:
-        success += 50
+    if target_passed and metrics.full_suite_passed:
+        success += 150   # both: clean fix, no regressions
+    elif target_passed:
+        success += 100   # target fixed, suite untested or still failing
+    elif metrics.full_suite_passed:
+        success += 80    # suite passes but target scope unclear
     if 0 < metrics.patch_diff_lines <= 20:
         success += 20
     if metrics.test_files_edited:
