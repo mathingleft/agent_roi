@@ -244,8 +244,10 @@ class AgentRunner:
             tokens = _estimate_tokens(artifact) * 10
             metadata["value"] = self._assess_read_value(artifact)
             # Sandbox enforcement — block reads outside cwd
+            # Resolve relative to self.cwd so "solution.py" maps correctly
             try:
-                resolved = Path(artifact).resolve()
+                p = Path(artifact)
+                resolved = (self.cwd / p).resolve() if not p.is_absolute() else p.resolve()
                 if not str(resolved).startswith(str(self.cwd.resolve())):
                     await self.tracer.record(
                         agent=self.role, event=EventType.BLOCKED_ACTION,
