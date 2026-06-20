@@ -367,6 +367,10 @@ For each agent role that needs improvement, output a JSON object like:
 
 Agent roles: log_investigator, code_investigator, reproducer, patch_agent, verifier
 
+CRITICAL CONSTRAINTS:
+- log_investigator, code_investigator, reproducer, and verifier are READ-ONLY agents. Never suggest file edits, writes, or patches for these roles.
+- Only patch_agent may be instructed to edit or write files.
+
 Only include roles that genuinely need new instructions based on the waste events.
 Keep each instruction concrete and actionable (not generic).
 Maximum 4 instructions per agent."""
