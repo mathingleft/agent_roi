@@ -191,14 +191,48 @@ export default function App() {
     <div style={{ maxWidth: 1280, margin: '0 auto', padding: '32px 24px' }}>
 
       {/* Header */}
-      <div style={{ marginBottom: 36 }}>
+      <div style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
           <span style={{ fontSize: 26, fontWeight: 800, color: 'var(--text-h)', fontFamily: 'var(--mono)' }}>AgentROI</span>
           <span style={{ background: 'rgba(124,106,247,0.15)', color: 'var(--accent)', border: '1px solid rgba(124,106,247,0.3)', borderRadius: 6, padding: '2px 10px', fontSize: 11, fontWeight: 600 }}>DEMO</span>
         </div>
-        <p style={{ color: 'var(--text-dim)', fontSize: 13 }}>
+        <p style={{ color: 'var(--text-dim)', fontSize: 13, marginBottom: 16 }}>
           Self-improving agent swarm — memory from Run 1 makes Run 2 faster, cheaper, and smarter
         </p>
+
+        {/* Benchmark sourcing callout */}
+        <div style={{
+          background: 'var(--bg2)', border: '1px solid var(--border)',
+          borderLeft: '3px solid var(--accent)', borderRadius: 8,
+          padding: '12px 16px', fontSize: 12, color: 'var(--text-dim)',
+          display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'flex-start',
+          marginBottom: 8,
+        }}>
+          <div style={{ flex: 2, minWidth: 260 }}>
+            <span style={{ color: 'var(--text-h)', fontWeight: 600 }}>Benchmark: HumanEvalFix</span>
+            {' '}— problems sourced from{' '}
+            <a href="https://huggingface.co/datasets/bigcode/humanevalpack" target="_blank"
+              style={{ color: 'var(--accent)', textDecoration: 'none' }}>
+              bigcode/humanevalpack
+            </a>
+            {' '}(OctoPack, Muennighoff et al. 2023). 9 Python bug-fix instances manually
+            selected and categorized into three generalization tiers.
+          </div>
+          <div style={{ flex: 3, minWidth: 300, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            {[
+              { tier: 'Tier 1', label: 'Same-bug repeat', desc: 'op_get_positive ×3 — ROI compounds across identical reruns', color: '#7c6af7' },
+              { tier: 'Tier 2', label: 'Same-domain', desc: 'op_rescale, op_solve — operator misuse, memory from T1 transfers', color: '#4ade80' },
+              { tier: 'Tier 3', label: 'Cross-domain', desc: 'val_* (value misuse) + var_* (variable misuse) — memory from A+B generalizes', color: '#facc15' },
+            ].map(({ tier, label, desc, color }) => (
+              <div key={tier} style={{ display: 'flex', alignItems: 'flex-start', gap: 6 }}>
+                <span style={{ background: color + '22', color, border: `1px solid ${color}55`,
+                  borderRadius: 4, padding: '1px 6px', fontSize: 10, fontWeight: 700,
+                  whiteSpace: 'nowrap', marginTop: 1 }}>{tier}</span>
+                <span><strong style={{ color: 'var(--text-h)' }}>{label}</strong> — {desc}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Hero stats */}
@@ -367,8 +401,20 @@ export default function App() {
       </ChartCard>
 
       {/* Footer */}
-      <div style={{ textAlign: 'center', color: 'var(--text-dim)', fontSize: 12, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
-        AgentROI · Run <code style={{ fontFamily: 'var(--mono)', background: 'var(--bg3)', padding: '1px 6px', borderRadius: 4 }}>demo/run_all.sh</code> to populate with live data
+      <div style={{ color: 'var(--text-dim)', fontSize: 11, paddingTop: 16, borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+        <span>
+          AgentROI · Run{' '}
+          <code style={{ fontFamily: 'var(--mono)', background: 'var(--bg3)', padding: '1px 6px', borderRadius: 4 }}>demo/run_humaneval.sh</code>
+          {' '}to populate with live data
+        </span>
+        <span>
+          Benchmark problems from{' '}
+          <a href="https://huggingface.co/datasets/bigcode/humanevalpack" target="_blank"
+            style={{ color: 'var(--accent)', textDecoration: 'none' }}>bigcode/humanevalpack</a>
+          {' '}·{' '}
+          <a href="https://arxiv.org/abs/2308.07124" target="_blank"
+            style={{ color: 'var(--accent)', textDecoration: 'none' }}>OctoPack paper (arXiv:2308.07124)</a>
+        </span>
       </div>
     </div>
   )
