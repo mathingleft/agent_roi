@@ -335,10 +335,11 @@ class TestActionBlocklist:
         out = bl.consume([], _ctx("patch_agent"))
         assert "edit_test_files" in out.blocked_tools
 
-    def test_default_blocks_file_edit_for_log_investigator(self):
+    def test_default_blocks_test_edit_for_log_investigator(self):
         bl = ActionBlocklist()
         out = bl.consume([], _ctx("log_investigator"))
-        assert "file_edit" in out.blocked_tools
+        assert "edit_test_files" in out.blocked_tools
+        assert "file_edit" not in out.blocked_tools
 
     def test_learned_blocked_action(self):
         bl = ActionBlocklist()
