@@ -12,37 +12,25 @@ import sys
 from pathlib import Path
 
 
+_TOKEN_BASELINE = 5000
+
+
 def formula_roi(metrics: dict, waste_events: list[dict]) -> float:
     target_passed = metrics["target_test_passed"] or metrics["full_suite_passed"]
+    if not target_passed:
+        return 0.0
 
-    success = 0.0
-    if target_passed and metrics["full_suite_passed"]:
-        success += 150
-    elif target_passed:
-        success += 100
-    elif metrics["full_suite_passed"]:
-        success += 80
-    if 0 < metrics["patch_diff_lines"] <= 20:
-        success += 20
-    if metrics["test_files_edited"]:
-        success -= 50
+    tok_eff = min(_TOKEN_BASELINE / max(metrics["tokens_total"], 1), 2.0)
     critical_waste = sum(1 for w in waste_events if w.get("severity") == "critical")
-    success -= critical_waste * 30
+    waste_factor = 1.0 - min(critical_waste * 0.15, 0.6)
+    patch_factor = 1.1 if (0 < metrics["patch_diff_lines"] <= 20) else 1.0
+    cheat_factor = 0.5 if metrics["test_files_edited"] else 1.0
 
-    cost = (
-        0.001 * metrics["tokens_total"]
-        + 5   * metrics["test_runs"]
-        + 2   * metrics["file_reads"]
-        + 10  * (metrics["wall_time_sec"] / 60)
-        + 4   * metrics["duplicate_file_reads"]
-    )
-    cost = max(cost, 1.0)
-    return round(success / cost, 3)
+    return round(min(tok_eff * waste_factor * patch_factor * cheat_factor, 2.0), 3)
 
 
 def composite_roi(formula: float, judge_overall: float) -> float:
-    formula_normalized = min(formula / 2.0, 1.0)
-    return round(0.4 * formula_normalized + 0.6 * judge_overall, 3)
+    return formula
 
 
 def reeval(results_dir: Path):
@@ -57,7 +45,7 @@ def reeval(results_dir: Path):
         old_score = report["composite_roi_score"]
 
         froi = formula_roi(report["metrics"], report["waste_events"])
-        new_score = composite_roi(froi, report["judge_verdict"]["overall_roi"])
+        new_score = composite_roi(froi, report.get("judge_verdict", {}).get("overall_roi", 0))
 
         if new_score != old_score:
             report["composite_roi_score"] = new_score

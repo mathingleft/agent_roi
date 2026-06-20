@@ -126,36 +126,35 @@ def _compute_raw_metrics(tracer: SwarmTracer, run_id: str) -> RunMetrics:
     )
 
 
+_TOKEN_BASELINE = 5000  # tokens expected for a cold-start solve with no memory
+
+
 def _compute_formula_roi(metrics: RunMetrics, waste_events: list[WasteEvent]) -> float:
-    """Reference formula — transparent and configurable."""
-    # full_suite_passed logically subsumes target_test_passed:
-    # if the whole suite passes, the target test must have passed too.
-    # Guard against tracer mis-classification (e.g. test scope detection noise).
+    """Token-efficiency ROI: 1.0 = baseline, >1.0 = memory helping, 2.0 = exceptional.
+
+    Interpretation:
+      0.0  — failed to fix the bug
+      ~1.0 — fixed it using ~baseline tokens (no memory benefit yet)
+      ~1.5 — fixed it using ~33% fewer tokens (memory helping)
+      2.0  — fixed it using <=50% of baseline tokens (strong memory effect)
+    """
     target_passed = metrics.target_test_passed or metrics.full_suite_passed
+    if not target_passed:
+        return 0.0
 
-    success = 0.0
-    if target_passed and metrics.full_suite_passed:
-        success += 150   # both: clean fix, no regressions
-    elif target_passed:
-        success += 100   # target fixed, suite untested or still failing
-    elif metrics.full_suite_passed:
-        success += 80    # suite passes but target scope unclear
-    if 0 < metrics.patch_diff_lines <= 20:
-        success += 20
-    if metrics.test_files_edited:
-        success -= 50
+    # Token efficiency: fewer tokens relative to baseline = higher score
+    tok_eff = min(_TOKEN_BASELINE / max(metrics.tokens_total, 1), 2.0)
+
+    # Waste penalty: each critical event costs 15%, capped at -60%
     critical_waste = sum(1 for w in waste_events if w.severity == "critical")
-    success -= critical_waste * 30
+    waste_factor = 1.0 - min(critical_waste * 0.15, 0.6)
 
-    cost = (
-        0.001 * metrics.tokens_total
-        + 5 * metrics.test_runs
-        + 2 * metrics.file_reads
-        + 10 * (metrics.wall_time_sec / 60)
-        + 4 * metrics.duplicate_file_reads
-    )
-    cost = max(cost, 1.0)
-    return round(success / cost, 3)
+    # Patch quality
+    patch_factor = 1.1 if (0 < metrics.patch_diff_lines <= 20) else 1.0
+    cheat_factor = 0.5 if metrics.test_files_edited else 1.0
+
+    roi = tok_eff * waste_factor * patch_factor * cheat_factor
+    return round(min(roi, 2.0), 3)
 
 
 def _build_trace_summary(tracer: SwarmTracer, max_events: int = 30) -> str:
@@ -257,14 +256,10 @@ async def call_llm_judge(
 
 
 def _compute_composite_roi(formula_roi: float, judge_verdict: JudgeVerdict) -> float:
+    """Composite ROI is now just the formula ROI — judge removed.
+    Score is on a 0–2 scale: 1.0 = baseline, 2.0 = exceptional token efficiency.
     """
-    Blend formula ROI (normalized) with judge ROI.
-    Formula captures hard objective costs; judge captures qualitative coherence.
-    Weights are intentionally transparent and configurable.
-    """
-    formula_normalized = min(formula_roi / 2.0, 1.0)
-    composite = 0.4 * formula_normalized + 0.6 * judge_verdict.overall_roi
-    return round(composite, 3)
+    return formula_roi
 
 
 _RETROSPECTIVE_SYSTEM = """You are an expert in agent-swarm optimization. You write concise, 
