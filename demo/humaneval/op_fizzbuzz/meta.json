@@ -1,0 +1,6 @@
+{
+  "group": "A_operator",
+  "entry_point": "fizz_buzz",
+  "bug_desc": "fizz_buzz() uses `and` instead of `or` \u2014 only counts numbers divisible by BOTH 11 and 13, misses numbers divisible by either.",
+  "fix_hint": "Change `i % 11 == 0 and i % 13 == 0` to `i % 11 == 0 or i % 13 == 0`."
+}

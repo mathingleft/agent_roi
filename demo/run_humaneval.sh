@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 # AgentROI — HumanEvalFix 3-tier generalization experiment
 #
-# TIER 1: Same-bug repeat       — op_get_positive run 3 times, same memory
-# TIER 2: Same-domain           — Group A (operator misuse) sequential, shared memory
-# TIER 3: Cross-domain          — Groups A→B→C sequential, fully shared memory
+# TIER 1: Same-bug repeat  — op_get_positive × 3, own memory
+# TIER 2: Same-domain      — operator misuse chain (op_get_positive→op_rescale→op_solve→op_fizzbuzz), own memory
+# TIER 3: Cross-domain     — value misuse then variable misuse (incl. harder var_rolling_max), own memory
+#
+# All 3 tiers run IN PARALLEL (separate memory files = no race conditions).
+# Within each tier the runs are sequential (memory must accumulate).
 #
 # Usage: ANTHROPIC_API_KEY=sk-ant-... ./demo/run_humaneval.sh
 
@@ -14,8 +17,9 @@ REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 HE="$SCRIPT_DIR/humaneval"
 RESULTS="$SCRIPT_DIR/results_humaneval"
 LOGS="$SCRIPT_DIR/logs_humaneval"
+MEMORY="$SCRIPT_DIR/memory"
 
-mkdir -p "$RESULTS" "$LOGS"
+mkdir -p "$RESULTS" "$LOGS" "$MEMORY"
 
 if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
   echo "ERROR: ANTHROPIC_API_KEY not set."
@@ -24,18 +28,13 @@ fi
 
 AGENTS_SLIM="reproducer,patch_agent,verifier"
 
-# Shared memory file — all tiers use the same one so learning compounds
-SHARED_MEM="$SCRIPT_DIR/memory/humaneval_shared.json"
-mkdir -p "$(dirname "$SHARED_MEM")"
-
 one_run() {
-  local name="$1" traj="$2" agents="${3:-}"
+  local name="$1" traj="$2" mem="$3" agents="${4:-}"
   local repo="$HE/$name"
   local log="$LOGS/${traj}.log"
   local extra=""
   [ -n "$agents" ] && extra="--agents $agents"
 
-  # read task info from meta.json
   local bug_desc entry_point
   bug_desc=$(python3 -c "import json; d=json.load(open('$repo/meta.json')); print(d['bug_desc'])")
   entry_point=$(python3 -c "import json; d=json.load(open('$repo/meta.json')); print(d['entry_point'])")
@@ -48,7 +47,7 @@ one_run() {
     --error-type "AssertionError" \
     --service "$name" \
     --trajectory "$traj" \
-    --memory "$SHARED_MEM" \
+    --memory "$mem" \
     --output "$RESULTS" \
     --backend ace \
     $extra \
@@ -56,54 +55,81 @@ one_run() {
   echo "  ✓ [$name] $traj done"
 }
 
+# ── Tier functions (each runs sequentially internally) ──────────────
+
+tier1() {
+  local mem="$MEMORY/humaneval_t1.json"
+  echo "━━ TIER 1: Same-bug repeat (op_get_positive × 3) ━━"
+  # Baseline with no memory, then memory compounds across reruns of identical bug
+  one_run "op_get_positive" "t1_run1_baseline" "$mem"
+  one_run "op_get_positive" "t1_run2_memory"   "$mem" "$AGENTS_SLIM"
+  one_run "op_get_positive" "t1_run3_memory"   "$mem" "$AGENTS_SLIM"
+  echo "✓ Tier 1 done"
+}
+
+tier2() {
+  local mem="$MEMORY/humaneval_t2.json"
+  echo "━━ TIER 2: Same-domain (operator misuse chain) ━━"
+  # Each new bug benefits from memory of previous operator bugs
+  one_run "op_get_positive" "t2_op_getpos_run1"  "$mem"
+  one_run "op_get_positive" "t2_op_getpos_run2"  "$mem" "$AGENTS_SLIM"
+  one_run "op_rescale"      "t2_op_rescale_run1" "$mem"
+  one_run "op_rescale"      "t2_op_rescale_run2" "$mem" "$AGENTS_SLIM"
+  one_run "op_fizzbuzz"     "t2_op_fizz_run1"    "$mem"   # harder: and→or
+  one_run "op_fizzbuzz"     "t2_op_fizz_run2"    "$mem" "$AGENTS_SLIM"
+  echo "✓ Tier 2 done"
+}
+
+tier3() {
+  local mem="$MEMORY/humaneval_t3.json"
+  echo "━━ TIER 3: Cross-domain (value misuse → variable misuse) ━━"
+  # value misuse group
+  one_run "val_incr_list"   "t3_val_incr_run1"   "$mem"
+  one_run "val_incr_list"   "t3_val_incr_run2"   "$mem" "$AGENTS_SLIM"
+  one_run "val_triangle"    "t3_val_tri_run1"     "$mem"
+  one_run "val_triangle"    "t3_val_tri_run2"     "$mem" "$AGENTS_SLIM"
+  # variable misuse group — memory from value bugs should generalize
+  one_run "var_gcd"         "t3_var_gcd_run1"     "$mem"
+  one_run "var_gcd"         "t3_var_gcd_run2"     "$mem" "$AGENTS_SLIM"
+  one_run "var_rolling_max" "t3_var_roll_run1"    "$mem"   # harder: max(numbers)→max(running_max,n)
+  one_run "var_rolling_max" "t3_var_roll_run2"    "$mem" "$AGENTS_SLIM"
+  echo "✓ Tier 3 done"
+}
+
 echo "╔══════════════════════════════════════════════════════════════╗"
 echo "║   AgentROI — HumanEvalFix Generalization Experiment         ║"
 echo "╠══════════════════════════════════════════════════════════════╣"
-echo "║  Tier 1: Same-bug repeat  (op_get_positive × 3)             ║"
-echo "║  Tier 2: Same-domain      (A: operator misuse × 3)          ║"
-echo "║  Tier 3: Cross-domain     (A→B→C, 3+3+3 bugs)               ║"
+echo "║  Tier 1: Same-bug repeat   op_get_positive × 3              ║"
+echo "║  Tier 2: Same-domain       operator misuse × 3 bugs         ║"
+echo "║  Tier 3: Cross-domain      value→variable misuse × 4 bugs   ║"
+echo "║  All tiers run IN PARALLEL (separate memory files)          ║"
 echo "╚══════════════════════════════════════════════════════════════╝"
-echo "Shared memory: $SHARED_MEM"
+echo "Results → $RESULTS  |  Logs → $LOGS"
 echo ""
 
-# ── TIER 1: Same-bug repeat ─────────────────────────────────────────
-echo "━━━━ TIER 1: Same-bug repeat (op_get_positive × 3 runs) ━━━━━━"
-one_run "op_get_positive" "t1_op_getpos_run1"
-one_run "op_get_positive" "t1_op_getpos_run2" "$AGENTS_SLIM"
-one_run "op_get_positive" "t1_op_getpos_run3" "$AGENTS_SLIM"
-echo "✓ Tier 1 complete."
+# Launch all 3 tiers in parallel
+tier1 > "$LOGS/tier1.log" 2>&1 &
+PID1=$!
+tier2 > "$LOGS/tier2.log" 2>&1 &
+PID2=$!
+tier3 > "$LOGS/tier3.log" 2>&1 &
+PID3=$!
+
+# Progress monitor
+while kill -0 $PID1 2>/dev/null || kill -0 $PID2 2>/dev/null || kill -0 $PID3 2>/dev/null; do
+  T1_DONE=$(kill -0 $PID1 2>/dev/null && echo "running" || echo "done")
+  T2_DONE=$(kill -0 $PID2 2>/dev/null && echo "running" || echo "done")
+  T3_DONE=$(kill -0 $PID3 2>/dev/null && echo "running" || echo "done")
+  NRESULTS=$(ls "$RESULTS"/*_roi_report.json 2>/dev/null | wc -l)
+  echo "  [T1=$T1_DONE T2=$T2_DONE T3=$T3_DONE] results so far: $NRESULTS"
+  sleep 30
+done
+
+wait $PID1 || true
+wait $PID2 || true
+wait $PID3 || true
+
 echo ""
-
-# ── TIER 2: Same-domain (Group A — all operator misuse) ─────────────
-echo "━━━━ TIER 2: Same-domain (Group A: operator misuse) ━━━━━━━━━━"
-# run1 baseline for each, then run2 with memory — sequential within group
-one_run "op_rescale"      "t2_op_rescale_run1"
-one_run "op_rescale"      "t2_op_rescale_run2" "$AGENTS_SLIM"
-one_run "op_solve"        "t2_op_solve_run1"
-one_run "op_solve"        "t2_op_solve_run2"   "$AGENTS_SLIM"
-echo "✓ Tier 2 complete."
-echo ""
-
-# ── TIER 3: Cross-domain (A→B→C, memory bleeds across bug types) ────
-echo "━━━━ TIER 3: Cross-domain (B: value misuse, then C: variable) ━"
-# Group B (value misuse) — memory from A should help
-one_run "val_incr_list"   "t3_val_incr_run1"
-one_run "val_incr_list"   "t3_val_incr_run2"   "$AGENTS_SLIM"
-one_run "val_triangle"    "t3_val_tri_run1"
-one_run "val_triangle"    "t3_val_tri_run2"     "$AGENTS_SLIM"
-one_run "val_sum_to_n"    "t3_val_sum_run1"
-one_run "val_sum_to_n"    "t3_val_sum_run2"     "$AGENTS_SLIM"
-
-# Group C (variable misuse) — memory from A+B should help even more
-one_run "var_mad"         "t3_var_mad_run1"
-one_run "var_mad"         "t3_var_mad_run2"     "$AGENTS_SLIM"
-one_run "var_gcd"         "t3_var_gcd_run1"
-one_run "var_gcd"         "t3_var_gcd_run2"     "$AGENTS_SLIM"
-one_run "var_decode"      "t3_var_dec_run1"
-one_run "var_decode"      "t3_var_dec_run2"     "$AGENTS_SLIM"
-echo "✓ Tier 3 complete."
-echo ""
-
 echo "╔══════════════════════════════════════════════════════════════╗"
 echo "║  All tiers complete. Generating summary...                   ║"
 echo "╚══════════════════════════════════════════════════════════════╝"

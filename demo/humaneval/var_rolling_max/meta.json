@@ -1,0 +1,6 @@
+{
+  "group": "C_variable",
+  "entry_point": "rolling_max",
+  "bug_desc": "rolling_max() calls max(numbers) \u2014 the global max of the whole list \u2014 instead of max(running_max, n), so it jumps to the overall maximum prematurely.",
+  "fix_hint": "Change `max(numbers)` to `max(running_max, n)` in the else branch."
+}

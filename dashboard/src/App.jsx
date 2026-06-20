@@ -220,9 +220,9 @@ export default function App() {
           </div>
           <div style={{ flex: 3, minWidth: 300, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {[
-              { tier: 'Tier 1', label: 'Same-bug repeat', desc: 'op_get_positive ×3 — ROI compounds across identical reruns', color: '#7c6af7' },
-              { tier: 'Tier 2', label: 'Same-domain', desc: 'op_rescale, op_solve — operator misuse, memory from T1 transfers', color: '#4ade80' },
-              { tier: 'Tier 3', label: 'Cross-domain', desc: 'val_* (value misuse) + var_* (variable misuse) — memory from A+B generalizes', color: '#facc15' },
+              { tier: 'Tier 1', label: 'Same-bug repeat', desc: 'op_get_positive ×3 — identical bug, ROI/speed compounds each rerun', color: '#7c6af7' },
+              { tier: 'Tier 2', label: 'Same-domain', desc: 'op_get_positive → op_rescale → op_fizzbuzz — all operator misuse, memory transfers across different bugs', color: '#4ade80' },
+              { tier: 'Tier 3', label: 'Cross-domain', desc: 'val_* (value misuse) → var_rolling_max (variable misuse) — strategies generalize across unrelated bug categories', color: '#facc15' },
             ].map(({ tier, label, desc, color }) => (
               <div key={tier} style={{ display: 'flex', alignItems: 'flex-start', gap: 6 }}>
                 <span style={{ background: color + '22', color, border: `1px solid ${color}55`,
