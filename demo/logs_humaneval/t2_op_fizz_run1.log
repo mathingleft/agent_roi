@@ -1,0 +1,63 @@
+╭────────────────────────────────── AgentROI ──────────────────────────────────╮
+│ Task: fizz_buzz() uses `and` instead of `or` — only counts numbers divisible │
+│ by BOTH 11 and 13, misses numbers divisible by either. Fix the bug in        │
+│ solution.py. The function is fizz_buzz(). Do NOT edit test                   │
+│ Trajectory: t2_op_fizz_run1  Iterations: 1                                   │
+│ CWD: /home/jack/Sync/New                                                     │
+│ Documents/Projects/hackathons/agent_roi/demo/humaneval/op_fizzbuzz  Backend: │
+│ ace                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭────────────────────────────── AgentROI Result ───────────────────────────────╮
+│ Composite ROI: 0.216    run_id=t2_op_fi_pytest_assertione_run001_6c9230      │
+│ trajectory=t2_op_fizz_run1                                                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+                               
+  Metric                Value  
+ ───────────────────────────── 
+  Wall time            198.7s  
+  Tokens (est)           5424  
+  File reads                6  
+  Duplicate reads           2  
+  Test runs                 5  
+  Evidence published        0  
+  Target test passed        ✗  
+  Full suite passed         ✓  
+  Test files edited     clean  
+                               
+Waste events detected (8):
+  •  duplicate_file_read: File '/home/jack/Sync/New 
+Documents/Projects/hackathons/agent_roi/demo/humaneval/op_fizzbuzz/solutio
+  •  duplicate_file_read: File '/home/jack/Sync/New 
+Documents/Projects/hackathons/agent_roi/demo/humaneval/op_fizzbuzz/tests/t
+  •  premature_full_suite: Full test suite run at T=41.8s by 'reproducer' before
+target test confirmed passing (never).
+  •  premature_full_suite: Full test suite run at T=45.2s by 'reproducer' before
+target test confirmed passing (never).
+  •  premature_full_suite: Full test suite run at T=105.3s by 'patch_agent' 
+before target test confirmed passing (never).
+  •  premature_full_suite: Full test suite run at T=107.2s by 'patch_agent' 
+before target test confirmed passing (never).
+  •  premature_full_suite: Full test suite run at T=145.7s by 'verifier' before 
+target test confirmed passing (never).
+  •  bad_routing: Patch agent started at T=63.6s before reproducer confirmed 
+failure (never confirmed).
+
+Judge insight: The swarm failed to fix a trivial one-line bug despite 5 edit 
+attempts, 5 test runs, and nearly 200 seconds of execution, indicating 
+fundamental coordination and capability failures.
+
+Retrospective: # Retrospective: op_fizzbuzz (ROI: 0.22)
+
+## What Went Well
+- Agents maintained file access and tool execution capability throughout
+- No catastrophic crashes or infinite loops
+- Basic coordination flow (reproducer → patch → verifier) was attempted
+
+## Key Waste Patterns and Their Impact
+
+**1. Patch
+
+Report written → /home/jack/Sync/New 
+Documents/Projects/hackathons/agent_roi/demo/results_humaneval/t2_op_fi_pytest_a
+ssertione_run001_6c9230_roi_report.json

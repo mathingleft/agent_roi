@@ -5,4 +5,4 @@ def solve(N):
     >>> solve(150)
     '110'
     """
-    return bin([int(i) for i in str(N)][-1])[2:]
+    return bin(sum(int(i) for i in str(N)))[2:]

@@ -882,3 +882,204 @@ class TestDemoRepoBugs:
         result = asyncio.run(get_user(1))
         # With bug, result is a coroutine object not a dict
         assert not isinstance(result, dict) or result is not None
+
+
+# ── Summarize.py tests ────────────────────────────────────────────────────────
+
+class TestSummarizeTierExtraction:
+    def test_tier1_trajectories(self):
+        from demo.summarize import _tier_from_trajectory
+        assert _tier_from_trajectory("t1a_run1") == "tier1_repeat"
+        assert _tier_from_trajectory("t1b_run2") == "tier1_repeat"
+        assert _tier_from_trajectory("t1c_run3") == "tier1_repeat"
+
+    def test_tier2_trajectories(self):
+        from demo.summarize import _tier_from_trajectory
+        assert _tier_from_trajectory("t2_op_getpos_run1") == "tier2_same_domain"
+        assert _tier_from_trajectory("t2_op_fizz_run2") == "tier2_same_domain"
+
+    def test_tier3_trajectories(self):
+        from demo.summarize import _tier_from_trajectory
+        assert _tier_from_trajectory("t3_val_incr_run1") == "tier3_cross_domain"
+        assert _tier_from_trajectory("t3_var_gcd_run2") == "tier3_cross_domain"
+
+    def test_non_tier_trajectory(self):
+        from demo.summarize import _tier_from_trajectory
+        assert _tier_from_trajectory("calc_run1") is None
+        assert _tier_from_trajectory("") is None
+        assert _tier_from_trajectory("t4_foo") is None
+
+    def test_extract_row_includes_tier_and_trajectory(self):
+        from demo.summarize import extract_row
+        fake_report = {
+            "run_id": "t2_op_getpos_run1",
+            "task_signature": {"service": "op_get_positive"},
+            "composite_roi_score": 0.42,
+            "metrics": {"tokens_total": 1234, "file_reads": 3, "duplicate_file_reads": 1,
+                        "target_test_passed": True, "full_suite_passed": False, "wall_time_sec": 90.0},
+            "waste_events": [],
+        }
+        row = extract_row(fake_report)
+        assert row["tier"] == "tier2_same_domain"
+        assert row["trajectory"] == "t2_op_getpos_run1"
+        assert row["service"] == "op_get_positive"
+        assert row["roi"] == 0.42
+        assert row["tokens"] == 1234
+
+    def test_output_flag(self, tmp_path):
+        import json
+        from demo.summarize import main
+        results_dir = tmp_path / "results"
+        results_dir.mkdir()
+        fake = {
+            "run_id": "t1a_run1",
+            "task_signature": {"service": "op_get_positive"},
+            "composite_roi_score": 0.3,
+            "metrics": {"tokens_total": 500, "file_reads": 2, "duplicate_file_reads": 0,
+                        "target_test_passed": False, "full_suite_passed": True, "wall_time_sec": 60.0},
+            "waste_events": [],
+        }
+        (results_dir / "t1a_run1_roi_report.json").write_text(json.dumps(fake))
+        out = tmp_path / "custom_summary.json"
+        main(results_dir, output=out)
+        assert out.exists()
+        data = json.loads(out.read_text())
+        assert "runs" in data
+        assert data["runs"][0]["tier"] == "tier1_repeat"
+
+    def test_default_output_path(self, tmp_path):
+        import json
+        from demo.summarize import main
+        results_dir = tmp_path / "results"
+        results_dir.mkdir()
+        fake = {
+            "run_id": "calc_run1",
+            "task_signature": {"service": "calc"},
+            "composite_roi_score": 0.5,
+            "metrics": {"tokens_total": 800, "file_reads": 4, "duplicate_file_reads": 1,
+                        "target_test_passed": True, "full_suite_passed": True, "wall_time_sec": 45.0},
+            "waste_events": [{"type": "dup_read"}],
+        }
+        (results_dir / "calc_run1_roi_report.json").write_text(json.dumps(fake))
+        main(results_dir)
+        default = results_dir / "summary.json"
+        assert default.exists()
+        data = json.loads(default.read_text())
+        assert data["runs"][0]["waste"] == 1
+
+
+# ── HumanEval reset.py tests ──────────────────────────────────────────────────
+
+class TestHumanevalReset:
+    def _load_reset_mod(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "he_reset", Path(__file__).parent.parent / "demo" / "humaneval" / "reset.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+
+    def _make_repo(self, base, name, buggy_content, fixed_content=None):
+        repo = base / name
+        repo.mkdir()
+        (repo / "solution.py").write_text(buggy_content)
+        (repo / "solution_buggy.py").write_text(buggy_content)
+        (repo / "solution_fixed.py").write_text(fixed_content or buggy_content)
+        (repo / "meta.json").write_text('{"group":"A","entry_point":"foo","bug_desc":"","fix_hint":""}')
+        return repo
+
+    def test_reset_restores_buggy(self, tmp_path):
+        buggy_content = "def foo():\n    return 1\n"
+        fixed_content = "def foo():\n    return 2\n"
+        repo = self._make_repo(tmp_path, "myrepo", buggy_content, fixed_content)
+        # Simulate agent having patched solution.py to fixed
+        (repo / "solution.py").write_text(fixed_content)
+
+        mod = self._load_reset_mod()
+        original_base = mod.BASE
+        mod.BASE = tmp_path
+        mod.reset()
+        mod.BASE = original_base
+
+        assert (repo / "solution.py").read_text() == buggy_content
+
+    def test_reset_only_targets_named_repo(self, tmp_path):
+        buggy_a = "def a(): return 1\n"
+        fixed_a = "def a(): return 2\n"
+        buggy_b = "def b(): return 10\n"
+        fixed_b = "def b(): return 20\n"
+
+        repo_a = self._make_repo(tmp_path, "repo_a", buggy_a, fixed_a)
+        repo_b = self._make_repo(tmp_path, "repo_b", buggy_b, fixed_b)
+        # Simulate both having been patched
+        (repo_a / "solution.py").write_text(fixed_a)
+        (repo_b / "solution.py").write_text(fixed_b)
+
+        mod = self._load_reset_mod()
+        original_base = mod.BASE
+        mod.BASE = tmp_path
+        mod.reset(only="repo_a")
+        mod.BASE = original_base
+
+        assert (repo_a / "solution.py").read_text() == buggy_a
+        assert (repo_b / "solution.py").read_text() == fixed_b  # untouched
+
+
+# ── HumanEval problem correctness tests ──────────────────────────────────────
+
+class TestHumanevalProblems:
+    BASE = Path(__file__).parent.parent / "demo" / "humaneval"
+
+    def _load(self, problem, filename="solution_fixed.py"):
+        import importlib.util
+        path = self.BASE / problem / filename
+        spec = importlib.util.spec_from_file_location(problem, path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+
+    def test_op_get_positive_fixed(self):
+        m = self._load("op_get_positive")
+        assert m.get_positive([-1, 2, -4, 3, 5]) == [2, 3, 5]
+        assert m.get_positive([-1, -2]) == []
+        assert m.get_positive([0, 1]) == [1]
+
+    def test_op_get_positive_buggy_includes_zero(self):
+        m = self._load("op_get_positive", "solution_buggy.py")
+        result = m.get_positive([0, 1, -1])
+        assert 0 in result  # bug: e > -1 includes 0
+
+    def test_op_fizzbuzz_fixed(self):
+        m = self._load("op_fizzbuzz")
+        assert m.fizz_buzz(50) == 0
+        assert m.fizz_buzz(78) == 2
+        assert m.fizz_buzz(79) == 3
+
+    def test_op_fizzbuzz_buggy_uses_and(self):
+        m = self._load("op_fizzbuzz", "solution_buggy.py")
+        assert m.fizz_buzz(78) != 2  # bug: and means only multiples of 143 counted
+
+    def test_var_rolling_max_fixed(self):
+        m = self._load("var_rolling_max")
+        assert m.rolling_max([1, 2, 3, 2, 3, 4, 2]) == [1, 2, 3, 3, 3, 4, 4]
+        assert m.rolling_max([5, 4, 3]) == [5, 5, 5]
+
+    def test_var_rolling_max_buggy_jumps_to_global_max(self):
+        m = self._load("var_rolling_max", "solution_buggy.py")
+        result = m.rolling_max([1, 2, 3, 2, 3, 4, 2])
+        assert result != [1, 2, 3, 3, 3, 4, 4]  # bug: max(numbers) gives [4,4,4,4,4,4,4]
+
+    def test_val_triangle_fixed(self):
+        m = self._load("val_triangle")
+        assert m.triangle_area(3, 4) == 6.0
+        assert m.triangle_area(5, 3) == 7.5
+
+    def test_var_gcd_fixed(self):
+        m = self._load("var_gcd")
+        assert m.greatest_common_divisor(3, 5) == 1
+        assert m.greatest_common_divisor(25, 15) == 5
+
+    def test_val_incr_list_fixed(self):
+        m = self._load("val_incr_list")
+        assert m.incr_list([1, 2, 3]) == [2, 3, 4]
+        assert m.incr_list([]) == []

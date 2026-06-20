@@ -11,6 +11,6 @@ def rolling_max(numbers: List[int]) -> List[int]:
         if running_max is None:
             running_max = n
         else:
-            running_max = max(numbers)
+            running_max = max(running_max, n)
         result.append(running_max)
     return result
