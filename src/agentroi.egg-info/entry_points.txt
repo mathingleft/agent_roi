@@ -1,0 +1,2 @@
+[console_scripts]
+agentroi = agentroi.cli:main

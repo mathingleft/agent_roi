@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: agentroi
+Version: 0.1.0
+Summary: Self-improving agent-swarm profiler with ROI optimization loop
+Requires-Python: >=3.11
+License-File: LICENSE
+Requires-Dist: claude-code-sdk>=0.0.10
+Requires-Dist: anthropic>=0.40.0
+Requires-Dist: anyio>=4.0.0
+Requires-Dist: click>=8.1.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: aiofiles>=23.0.0
+Dynamic: license-file

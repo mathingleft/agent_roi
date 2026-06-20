@@ -1,0 +1,14 @@
+{
+  "runs": [
+    {"service":"calc","roi":0.446,"tokens":3500,"file_reads":8,"dup_reads":4,"waste":4,"target_pass":true,"suite_pass":false,"wall_time":128.5,"file":"calc_run1"},
+    {"service":"calc","roi":0.550,"tokens":1915,"file_reads":3,"dup_reads":1,"waste":2,"target_pass":true,"suite_pass":true,"wall_time":101.9,"file":"calc_run2"},
+    {"service":"auth","roi":0.0,"tokens":0,"file_reads":0,"dup_reads":0,"waste":0,"target_pass":false,"suite_pass":false,"wall_time":0,"file":"pending"},
+    {"service":"auth","roi":0.0,"tokens":0,"file_reads":0,"dup_reads":0,"waste":0,"target_pass":false,"suite_pass":false,"wall_time":0,"file":"pending"},
+    {"service":"api","roi":0.0,"tokens":0,"file_reads":0,"dup_reads":0,"waste":0,"target_pass":false,"suite_pass":false,"wall_time":0,"file":"pending"},
+    {"service":"api","roi":0.0,"tokens":0,"file_reads":0,"dup_reads":0,"waste":0,"target_pass":false,"suite_pass":false,"wall_time":0,"file":"pending"},
+    {"service":"parser","roi":0.0,"tokens":0,"file_reads":0,"dup_reads":0,"waste":0,"target_pass":false,"suite_pass":false,"wall_time":0,"file":"pending"},
+    {"service":"parser","roi":0.0,"tokens":0,"file_reads":0,"dup_reads":0,"waste":0,"target_pass":false,"suite_pass":false,"wall_time":0,"file":"pending"},
+    {"service":"pipeline","roi":0.0,"tokens":0,"file_reads":0,"dup_reads":0,"waste":0,"target_pass":false,"suite_pass":false,"wall_time":0,"file":"pending"},
+    {"service":"pipeline","roi":0.0,"tokens":0,"file_reads":0,"dup_reads":0,"waste":0,"target_pass":false,"suite_pass":false,"wall_time":0,"file":"pending"}
+  ]
+}
