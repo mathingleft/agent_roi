@@ -1,4 +1,5 @@
 LICENSE
+README.md
 pyproject.toml
 src/agentroi/__init__.py
 src/agentroi/cli.py

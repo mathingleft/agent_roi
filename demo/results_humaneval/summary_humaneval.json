@@ -121,21 +121,6 @@
       "file": "t1c_run2_pytest_assertione_run001_5d22ff_roi_report.json"
     },
     {
-      "run_id": "rtione_run039_88c38e",
-      "trajectory": "t1c_run2_pytest_assertione_run039_88c38e",
-      "service": "var_gcd",
-      "roi": 0.245,
-      "tokens": 2543,
-      "file_reads": 3,
-      "dup_reads": 2,
-      "waste": 3,
-      "target_pass": false,
-      "suite_pass": true,
-      "wall_time": 89.855,
-      "tier": "tier1_repeat",
-      "file": "t1c_run2_pytest_assertione_run039_88c38e_roi_report.json"
-    },
-    {
       "run_id": "rtione_run001_7fceb3",
       "trajectory": "t1c_run3_pytest_assertione_run001_7fceb3",
       "service": "var_gcd",
@@ -346,19 +331,19 @@
       "file": "t3_var_g_pytest_assertione_run001_665fdc_roi_report.json"
     },
     {
-      "run_id": "rtione_run001_82d83b",
-      "trajectory": "t3_var_g_pytest_assertione_run001_82d83b",
+      "run_id": "rtione_run014_30f83c",
+      "trajectory": "t3_var_g_pytest_assertione_run014_30f83c",
       "service": "var_gcd",
-      "roi": 1.047,
-      "tokens": 4776,
-      "file_reads": 9,
-      "dup_reads": 4,
-      "waste": 4,
+      "roi": 1.681,
+      "tokens": 3272,
+      "file_reads": 1,
+      "dup_reads": 0,
+      "waste": 9,
       "target_pass": false,
       "suite_pass": true,
-      "wall_time": 142.082,
+      "wall_time": 143.557,
       "tier": "tier3_cross_domain",
-      "file": "t3_var_g_pytest_assertione_run001_82d83b_roi_report.json"
+      "file": "t3_var_g_pytest_assertione_run014_30f83c_roi_report.json"
     },
     {
       "run_id": "rtione_run001_ec1cb8",
@@ -456,38 +441,6 @@
         "file": "t2_op_fi_pytest_assertione_run001_9afa97_roi_report.json"
       }
     ],
-    "val_incr_list": [
-      {
-        "run_id": "rtione_run001_176b76",
-        "trajectory": "t3_val_i_pytest_assertione_run001_176b76",
-        "service": "val_incr_list",
-        "roi": 1.314,
-        "tokens": 3804,
-        "file_reads": 6,
-        "dup_reads": 4,
-        "waste": 5,
-        "target_pass": false,
-        "suite_pass": true,
-        "wall_time": 167.351,
-        "tier": "tier3_cross_domain",
-        "file": "t3_val_i_pytest_assertione_run001_176b76_roi_report.json"
-      },
-      {
-        "run_id": "rtione_run015_41bac7",
-        "trajectory": "t3_val_i_pytest_assertione_run015_41bac7",
-        "service": "val_incr_list",
-        "roi": 1.441,
-        "tokens": 3470,
-        "file_reads": 6,
-        "dup_reads": 3,
-        "waste": 8,
-        "target_pass": false,
-        "suite_pass": true,
-        "wall_time": 93.227,
-        "tier": "tier3_cross_domain",
-        "file": "t3_val_i_pytest_assertione_run015_41bac7_roi_report.json"
-      }
-    ],
     "var_gcd": [
       {
         "run_id": "rtione_run001_4d0a20",
@@ -520,21 +473,6 @@
         "file": "t1c_run2_pytest_assertione_run001_5d22ff_roi_report.json"
       },
       {
-        "run_id": "rtione_run039_88c38e",
-        "trajectory": "t1c_run2_pytest_assertione_run039_88c38e",
-        "service": "var_gcd",
-        "roi": 0.245,
-        "tokens": 2543,
-        "file_reads": 3,
-        "dup_reads": 2,
-        "waste": 3,
-        "target_pass": false,
-        "suite_pass": true,
-        "wall_time": 89.855,
-        "tier": "tier1_repeat",
-        "file": "t1c_run2_pytest_assertione_run039_88c38e_roi_report.json"
-      },
-      {
         "run_id": "rtione_run001_7fceb3",
         "trajectory": "t1c_run3_pytest_assertione_run001_7fceb3",
         "service": "var_gcd",
@@ -565,96 +503,83 @@
         "file": "t3_var_g_pytest_assertione_run001_665fdc_roi_report.json"
       },
       {
-        "run_id": "rtione_run001_82d83b",
-        "trajectory": "t3_var_g_pytest_assertione_run001_82d83b",
+        "run_id": "rtione_run014_30f83c",
+        "trajectory": "t3_var_g_pytest_assertione_run014_30f83c",
         "service": "var_gcd",
-        "roi": 1.047,
-        "tokens": 4776,
-        "file_reads": 9,
-        "dup_reads": 4,
+        "roi": 1.681,
+        "tokens": 3272,
+        "file_reads": 1,
+        "dup_reads": 0,
+        "waste": 9,
+        "target_pass": false,
+        "suite_pass": true,
+        "wall_time": 143.557,
+        "tier": "tier3_cross_domain",
+        "file": "t3_var_g_pytest_assertione_run014_30f83c_roi_report.json"
+      }
+    ],
+    "op_solve": [
+      {
+        "run_id": "rtione_run001_17a70a",
+        "trajectory": "t2_op_so_pytest_assertione_run001_17a70a",
+        "service": "op_solve",
+        "roi": 1.084,
+        "tokens": 5076,
+        "file_reads": 8,
+        "dup_reads": 3,
         "waste": 4,
         "target_pass": false,
         "suite_pass": true,
-        "wall_time": 142.082,
-        "tier": "tier3_cross_domain",
-        "file": "t3_var_g_pytest_assertione_run001_82d83b_roi_report.json"
+        "wall_time": 204.445,
+        "tier": "tier2_same_domain",
+        "file": "t2_op_so_pytest_assertione_run001_17a70a_roi_report.json"
+      },
+      {
+        "run_id": "rtione_run001_e94741",
+        "trajectory": "t2_op_so_pytest_assertione_run001_e94741",
+        "service": "op_solve",
+        "roi": 1.294,
+        "tokens": 3864,
+        "file_reads": 6,
+        "dup_reads": 2,
+        "waste": 3,
+        "target_pass": false,
+        "suite_pass": true,
+        "wall_time": 139.135,
+        "tier": "tier2_same_domain",
+        "file": "t2_op_so_pytest_assertione_run001_e94741_roi_report.json"
       }
     ],
-    "op_get_positive": [
+    "val_incr_list": [
       {
-        "run_id": "rtione_run001_0e33d6",
-        "trajectory": "t1a_run1_pytest_assertione_run001_0e33d6",
-        "service": "op_get_positive",
-        "roi": 1.118,
-        "tokens": 4474,
-        "file_reads": 3,
-        "dup_reads": 1,
-        "waste": 6,
+        "run_id": "rtione_run001_176b76",
+        "trajectory": "t3_val_i_pytest_assertione_run001_176b76",
+        "service": "val_incr_list",
+        "roi": 1.314,
+        "tokens": 3804,
+        "file_reads": 6,
+        "dup_reads": 4,
+        "waste": 5,
         "target_pass": false,
         "suite_pass": true,
-        "wall_time": 247.207,
-        "tier": "tier1_repeat",
-        "file": "t1a_run1_pytest_assertione_run001_0e33d6_roi_report.json"
+        "wall_time": 167.351,
+        "tier": "tier3_cross_domain",
+        "file": "t3_val_i_pytest_assertione_run001_176b76_roi_report.json"
       },
       {
-        "run_id": "rtione_run016_274986",
-        "trajectory": "t1a_run2_pytest_assertione_run016_274986",
-        "service": "op_get_positive",
-        "roi": 2.0,
-        "tokens": 2205,
-        "file_reads": 2,
-        "dup_reads": 1,
-        "waste": 6,
-        "target_pass": false,
-        "suite_pass": true,
-        "wall_time": 75.66,
-        "tier": "tier1_repeat",
-        "file": "t1a_run2_pytest_assertione_run016_274986_roi_report.json"
-      },
-      {
-        "run_id": "rtione_run001_d0bd13",
-        "trajectory": "t1a_run3_pytest_assertione_run001_d0bd13",
-        "service": "op_get_positive",
-        "roi": 1.161,
-        "tokens": 4736,
-        "file_reads": 7,
-        "dup_reads": 1,
-        "waste": 3,
-        "target_pass": false,
-        "suite_pass": true,
-        "wall_time": 223.331,
-        "tier": "tier1_repeat",
-        "file": "t1a_run3_pytest_assertione_run001_d0bd13_roi_report.json"
-      },
-      {
-        "run_id": "rtione_run001_29d1bc",
-        "trajectory": "t2_op_ge_pytest_assertione_run001_29d1bc",
-        "service": "op_get_positive",
-        "roi": 0.946,
-        "tokens": 5287,
-        "file_reads": 5,
+        "run_id": "rtione_run015_41bac7",
+        "trajectory": "t3_val_i_pytest_assertione_run015_41bac7",
+        "service": "val_incr_list",
+        "roi": 1.441,
+        "tokens": 3470,
+        "file_reads": 6,
         "dup_reads": 3,
-        "waste": 6,
+        "waste": 8,
         "target_pass": false,
         "suite_pass": true,
-        "wall_time": 252.746,
-        "tier": "tier2_same_domain",
-        "file": "t2_op_ge_pytest_assertione_run001_29d1bc_roi_report.json"
-      },
-      {
-        "run_id": "rtione_run001_a14523",
-        "trajectory": "t2_op_ge_pytest_assertione_run001_a14523",
-        "service": "op_get_positive",
-        "roi": 2.0,
-        "tokens": 1950,
-        "file_reads": 2,
-        "dup_reads": 1,
-        "waste": 3,
-        "target_pass": false,
-        "suite_pass": true,
-        "wall_time": 72.941,
-        "tier": "tier2_same_domain",
-        "file": "t2_op_ge_pytest_assertione_run001_a14523_roi_report.json"
+        "wall_time": 93.227,
+        "tier": "tier3_cross_domain",
+        "file": "t3_val_i_pytest_assertione_run015_41bac7_roi_report.json"
       }
     ],
     "var_rolling_max": [
@@ -766,36 +691,81 @@
         "file": "t3_val_t_pytest_assertione_run017_bf37e5_roi_report.json"
       }
     ],
-    "op_solve": [
+    "op_get_positive": [
       {
-        "run_id": "rtione_run001_17a70a",
-        "trajectory": "t2_op_so_pytest_assertione_run001_17a70a",
-        "service": "op_solve",
-        "roi": 1.084,
-        "tokens": 5076,
-        "file_reads": 8,
-        "dup_reads": 3,
-        "waste": 4,
+        "run_id": "rtione_run001_0e33d6",
+        "trajectory": "t1a_run1_pytest_assertione_run001_0e33d6",
+        "service": "op_get_positive",
+        "roi": 1.118,
+        "tokens": 4474,
+        "file_reads": 3,
+        "dup_reads": 1,
+        "waste": 6,
         "target_pass": false,
         "suite_pass": true,
-        "wall_time": 204.445,
-        "tier": "tier2_same_domain",
-        "file": "t2_op_so_pytest_assertione_run001_17a70a_roi_report.json"
+        "wall_time": 247.207,
+        "tier": "tier1_repeat",
+        "file": "t1a_run1_pytest_assertione_run001_0e33d6_roi_report.json"
       },
       {
-        "run_id": "rtione_run001_e94741",
-        "trajectory": "t2_op_so_pytest_assertione_run001_e94741",
-        "service": "op_solve",
-        "roi": 1.294,
-        "tokens": 3864,
-        "file_reads": 6,
-        "dup_reads": 2,
+        "run_id": "rtione_run016_274986",
+        "trajectory": "t1a_run2_pytest_assertione_run016_274986",
+        "service": "op_get_positive",
+        "roi": 2.0,
+        "tokens": 2205,
+        "file_reads": 2,
+        "dup_reads": 1,
+        "waste": 6,
+        "target_pass": false,
+        "suite_pass": true,
+        "wall_time": 75.66,
+        "tier": "tier1_repeat",
+        "file": "t1a_run2_pytest_assertione_run016_274986_roi_report.json"
+      },
+      {
+        "run_id": "rtione_run001_d0bd13",
+        "trajectory": "t1a_run3_pytest_assertione_run001_d0bd13",
+        "service": "op_get_positive",
+        "roi": 1.161,
+        "tokens": 4736,
+        "file_reads": 7,
+        "dup_reads": 1,
         "waste": 3,
         "target_pass": false,
         "suite_pass": true,
-        "wall_time": 139.135,
+        "wall_time": 223.331,
+        "tier": "tier1_repeat",
+        "file": "t1a_run3_pytest_assertione_run001_d0bd13_roi_report.json"
+      },
+      {
+        "run_id": "rtione_run001_29d1bc",
+        "trajectory": "t2_op_ge_pytest_assertione_run001_29d1bc",
+        "service": "op_get_positive",
+        "roi": 0.946,
+        "tokens": 5287,
+        "file_reads": 5,
+        "dup_reads": 3,
+        "waste": 6,
+        "target_pass": false,
+        "suite_pass": true,
+        "wall_time": 252.746,
         "tier": "tier2_same_domain",
-        "file": "t2_op_so_pytest_assertione_run001_e94741_roi_report.json"
+        "file": "t2_op_ge_pytest_assertione_run001_29d1bc_roi_report.json"
+      },
+      {
+        "run_id": "rtione_run001_a14523",
+        "trajectory": "t2_op_ge_pytest_assertione_run001_a14523",
+        "service": "op_get_positive",
+        "roi": 2.0,
+        "tokens": 1950,
+        "file_reads": 2,
+        "dup_reads": 1,
+        "waste": 3,
+        "target_pass": false,
+        "suite_pass": true,
+        "wall_time": 72.941,
+        "tier": "tier2_same_domain",
+        "file": "t2_op_ge_pytest_assertione_run001_a14523_roi_report.json"
       }
     ]
   }

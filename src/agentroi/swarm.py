@@ -281,7 +281,8 @@ class AgentRunner:
             artifact = str(tool_input.get("file_path", tool_input.get("target_file", "")))
             event_type = EventType.FILE_EDIT
             tokens = _estimate_tokens(str(tool_input)) * 2
-            lines = str(tool_input.get("new_string", tool_input.get("content", ""))).count("\n")
+            new_content = str(tool_input.get("new_string", tool_input.get("content", "")))
+            lines = new_content.count("\n") + (1 if new_content.strip() else 0)
             metadata["lines_changed"] = lines
 
             if "file_edit" in self.blocked_tools:
