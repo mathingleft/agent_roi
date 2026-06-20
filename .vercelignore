@@ -1,4 +1,4 @@
 pyproject.toml
-src/
-tests/
-demo/
+/src
+/tests
+/demo
