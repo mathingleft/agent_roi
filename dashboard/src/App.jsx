@@ -127,38 +127,50 @@ export default function App() {
   const runs = data?.runs || []
   const services = [...new Set(runs.map(r => r.service))]
 
+  const completedRuns = runs.filter(r => r.tokens > 0)
+
   const trendData = services.map(svc => {
     const svcRuns = runs.filter(r => r.service === svc)
     const r1 = svcRuns[0], r2 = svcRuns[1]
+    const r1ok = r1?.tokens > 0, r2ok = r2?.tokens > 0
     return {
       service: svc,
-      run1_roi:     r1?.roi       ?? 0,
-      run2_roi:     r2?.roi       ?? null,
-      run1_tokens:  r1?.tokens    ?? 0,
-      run2_tokens:  r2?.tokens    ?? null,
-      run1_waste:   r1?.waste     ?? 0,
-      run2_waste:   r2?.waste     ?? null,
-      run1_wall:    r1?.wall_time ?? 0,
-      run2_wall:    r2?.wall_time ?? null,
+      run1_roi:      r1ok ? (r1?.roi       ?? 0)    : 0,
+      run2_roi:      r2ok ? (r2?.roi       ?? null)  : null,
+      run1_tokens:   r1ok ? (r1?.tokens    ?? 0)    : 0,
+      run2_tokens:   r2ok ? (r2?.tokens    ?? null)  : null,
+      run1_waste:    r1ok ? (r1?.waste     ?? 0)    : 0,
+      run2_waste:    r2ok ? (r2?.waste     ?? null)  : null,
+      run1_wall:     r1ok ? (r1?.wall_time ?? 0)    : 0,
+      run2_wall:     r2ok ? (r2?.wall_time ?? null)  : null,
+      run1_reads:    r1ok ? (r1?.file_reads ?? 0)   : 0,
+      run2_reads:    r2ok ? (r2?.file_reads ?? null) : null,
+      run1_dups:     r1ok ? (r1?.dup_reads  ?? 0)   : 0,
+      run2_dups:     r2ok ? (r2?.dup_reads  ?? null) : null,
     }
   })
 
-  const completedRuns = runs.filter(r => r.tokens > 0)
-  const run1s = completedRuns.filter((_, i) => i % 2 === 0)
-  const run2s = completedRuns.filter((_, i) => i % 2 === 1)
+  // Averages derived from trendData so pairing is always correct per service
+  const paired = trendData.filter(d => d.run1_tokens > 0)
+  const hasPairs = paired.some(d => d.run2_roi != null)
+  const avg1 = key => paired.length ? paired.reduce((s, d) => s + (d[key] ?? 0), 0) / paired.length : 0
+  const avg2 = key => {
+    const valid = paired.filter(d => d[key] != null)
+    return valid.length ? valid.reduce((s, d) => s + d[key], 0) / valid.length : 0
+  }
 
-  const avg = arr => arr.length ? arr.reduce((s, r) => s + r, 0) / arr.length : 0
-  const avgRoi1   = avg(run1s.map(r => r.roi))
-  const avgRoi2   = avg(run2s.map(r => r.roi))
-  const avgWall1  = avg(run1s.map(r => r.wall_time))
-  const avgWall2  = avg(run2s.map(r => r.wall_time))
-  const avgTok1   = avg(run1s.map(r => r.tokens))
-  const avgTok2   = avg(run2s.map(r => r.tokens))
+  const avgRoi1  = avg1('run1_roi');   const avgRoi2  = avg2('run2_roi')
+  const avgWall1 = avg1('run1_wall');  const avgWall2 = avg2('run2_wall')
+  const avgTok1  = avg1('run1_tokens');const avgTok2  = avg2('run2_tokens')
+  const avgDups1 = avg1('run1_dups');  const avgDups2 = avg2('run2_dups')
+  const avgReads1= avg1('run1_reads'); const avgReads2= avg2('run2_reads')
   const totalWaste = completedRuns.reduce((s, r) => s + r.waste, 0)
 
-  const roiDelta  = run2s.length ? pct(avgRoi1, avgRoi2)  : null
-  const wallDelta = run2s.length ? pct(avgWall1, avgWall2) : null
-  const tokDelta  = run2s.length ? pct(avgTok1, avgTok2)  : null
+  const roiDelta   = hasPairs ? pct(avgRoi1, avgRoi2)   : null
+  const wallDelta  = hasPairs ? pct(avgWall1, avgWall2)  : null
+  const tokDelta   = hasPairs ? pct(avgTok1, avgTok2)    : null
+  const dupsDelta  = hasPairs ? pct(avgDups1, avgDups2)  : null
+  const readsDelta = hasPairs ? pct(avgReads1, avgReads2): null
 
   const axisStyle = { fill: 'var(--text-dim)', fontSize: 11 }
   const gridStyle = { strokeDasharray: '3 3', stroke: 'var(--border)' }
@@ -178,18 +190,24 @@ export default function App() {
       </div>
 
       {/* Hero stats */}
-      <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 32 }}>
-        <StatCard label="Avg ROI  Run 1→2"
-          value={avgRoi2 > 0 ? `${avgRoi1.toFixed(2)} → ${avgRoi2.toFixed(2)}` : avgRoi1.toFixed(3)}
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 32 }}>
+        <StatCard label="ROI  1→2"
+          value={hasPairs ? `${avgRoi1.toFixed(2)} → ${avgRoi2.toFixed(2)}` : avgRoi1.toFixed(3)}
           color="var(--accent)" delta={roiDelta} />
-        <StatCard label="Avg Wall Time  Run 1→2"
-          value={avgWall2 > 0 ? `${avgWall1.toFixed(0)}s → ${avgWall2.toFixed(0)}s` : `${avgWall1.toFixed(0)}s`}
-          color="var(--accent4)" delta={wallDelta} sub="seconds per run" />
-        <StatCard label="Avg Tokens  Run 1→2"
-          value={avgTok2 > 0 ? `${Math.round(avgTok1).toLocaleString()} → ${Math.round(avgTok2).toLocaleString()}` : Math.round(avgTok1).toLocaleString()}
+        <StatCard label="Wall Time  1→2"
+          value={hasPairs ? `${avgWall1.toFixed(0)}s → ${avgWall2.toFixed(0)}s` : `${avgWall1.toFixed(0)}s`}
+          color="var(--accent4)" delta={wallDelta} />
+        <StatCard label="Tokens  1→2"
+          value={hasPairs ? `${Math.round(avgTok1/100)*100}→${Math.round(avgTok2/100)*100}` : Math.round(avgTok1).toLocaleString()}
           color="var(--accent2)" delta={tokDelta} />
-        <StatCard label="Waste events detected" value={totalWaste} sub="stored in memory" />
-        <StatCard label="Runs complete" value={completedRuns.length} sub={`of ${runs.length}`} />
+        <StatCard label="File Reads  1→2"
+          value={hasPairs ? `${avgReads1.toFixed(1)} → ${avgReads2.toFixed(1)}` : avgReads1.toFixed(1)}
+          color="#60a5fa" delta={readsDelta} />
+        <StatCard label="Dup Reads  1→2"
+          value={hasPairs ? `${avgDups1.toFixed(1)} → ${avgDups2.toFixed(1)}` : avgDups1.toFixed(1)}
+          color="#f87171" delta={dupsDelta} />
+        <StatCard label="Waste Detected" value={totalWaste} sub="stored in memory" />
+        <StatCard label="Runs" value={`${completedRuns.length}/${runs.length}`} sub="complete" />
       </div>
 
       {/* ROI + Wall time row */}
@@ -249,6 +267,37 @@ export default function App() {
               <Legend wrapperStyle={{ color: 'var(--text-dim)', fontSize: 12 }} />
               <Bar dataKey="run1_waste" name="Run 1 waste" fill="#f87171" radius={[4,4,0,0]} />
               <Bar dataKey="run2_waste" name="Run 2 waste" fill="var(--accent2)" radius={[4,4,0,0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
+      </div>
+
+      {/* File reads + Dup reads row */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
+        <ChartCard title="📂 File Reads: Run 1 → Run 2">
+          <ResponsiveContainer width="100%" height={210}>
+            <BarChart data={trendData} barCategoryGap="28%">
+              <CartesianGrid {...gridStyle} />
+              <XAxis dataKey="service" tick={axisStyle} />
+              <YAxis tick={axisStyle} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend wrapperStyle={{ color: 'var(--text-dim)', fontSize: 12 }} />
+              <Bar dataKey="run1_reads" name="Run 1 reads" fill="#4b5270" radius={[4,4,0,0]} />
+              <Bar dataKey="run2_reads" name="Run 2 reads" fill="#60a5fa" radius={[4,4,0,0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
+
+        <ChartCard title="♻️ Duplicate Reads: Run 1 → Run 2">
+          <ResponsiveContainer width="100%" height={210}>
+            <BarChart data={trendData} barCategoryGap="28%">
+              <CartesianGrid {...gridStyle} />
+              <XAxis dataKey="service" tick={axisStyle} />
+              <YAxis tick={axisStyle} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend wrapperStyle={{ color: 'var(--text-dim)', fontSize: 12 }} />
+              <Bar dataKey="run1_dups" name="Run 1 dup reads" fill="#f87171" radius={[4,4,0,0]} />
+              <Bar dataKey="run2_dups" name="Run 2 dup reads" fill="var(--accent2)" radius={[4,4,0,0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
