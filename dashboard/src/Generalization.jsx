@@ -164,8 +164,7 @@ function Tier3Chart({ runs, metric = 'roi' }) {
           formatter={(v, name) => [fmt(v), name]} />
         <Legend wrapperStyle={{ fontSize: 11 }} />
         {boundaryIdx > 0 && (
-          <ReferenceLine x={data[boundaryIdx]?.bug} stroke="#f87171" strokeDasharray="4 2"
-            label={{ value: '← value | variable →', position: 'insideTopRight', fill: '#f87171', fontSize: 10 }} />
+          <ReferenceLine x={data[boundaryIdx]?.bug} stroke="#f87171" strokeDasharray="4 2" />
         )}
         <Bar dataKey="run1" name="Run 1 (baseline)" radius={[3,3,0,0]}>
           {data.map((d, i) => <Cell key={i} fill={d.domain === 'value' ? '#3b5a4a' : '#3b3a5a'} />)}
@@ -296,7 +295,7 @@ export default function Generalization() {
       <ChartCard title="🌐 Tier 3 — Cross-domain transfer: value misuse → variable misuse">
         <Tier3Chart runs={t3runs} metric={metric} />
         <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 8 }}>
-          3 value-misuse bugs → 3 variable-misuse bugs, shared memory throughout. Red line = domain boundary.
+          3 value-misuse bugs → 3 variable-misuse bugs, shared memory throughout. Green = value domain, purple = variable domain. Dashed line = domain boundary.
           Claim: strategies learned fixing value bugs (wrong constants) generalize to variable bugs (wrong variable references).
         </div>
       </ChartCard>
