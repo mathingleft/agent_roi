@@ -667,11 +667,11 @@ class TestROIFormula:
         m_expensive = self._metrics(tokens_total=5000)
         assert _compute_formula_roi(m_cheap, []) > _compute_formula_roi(m_expensive, [])
 
-    def test_formula_higher_wall_time_lower_roi(self):
+    def test_formula_fewer_tokens_higher_roi(self):
         from agentroi.roi_analyzer import _compute_formula_roi
-        m_fast = self._metrics(wall_time_sec=30.0)
-        m_slow = self._metrics(wall_time_sec=300.0)
-        assert _compute_formula_roi(m_fast, []) > _compute_formula_roi(m_slow, [])
+        m_cheap = self._metrics(tokens_total=1000)
+        m_expensive = self._metrics(tokens_total=4999)
+        assert _compute_formula_roi(m_cheap, []) > _compute_formula_roi(m_expensive, [])
 
     def test_formula_blocked_actions_in_metrics(self):
         from agentroi.roi_analyzer import _compute_formula_roi
@@ -824,9 +824,9 @@ class TestWallTimeTracking:
             blocked_actions=0, target_test_passed=True, full_suite_passed=True,
             patch_diff_lines=5, test_files_edited=False,
         )
-        fast = RunMetrics(wall_time_sec=60.0, **base)
-        slow = RunMetrics(wall_time_sec=240.0, **base)
-        assert _compute_formula_roi(fast, []) > _compute_formula_roi(slow, [])
+        cheap = RunMetrics(wall_time_sec=60.0, **{**base, 'tokens_total': 1500})
+        expensive = RunMetrics(wall_time_sec=240.0, **{**base, 'tokens_total': 4800})
+        assert _compute_formula_roi(cheap, []) > _compute_formula_roi(expensive, [])
 
 
 # ---------------------------------------------------------------------------
