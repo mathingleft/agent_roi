@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Generalization from './Generalization.jsx'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer, LineChart, Line, ReferenceLine
@@ -187,6 +188,8 @@ export default function App() {
   const axisStyle = { fill: 'var(--text-dim)', fontSize: 11 }
   const gridStyle = { strokeDasharray: '3 3', stroke: 'var(--border)' }
 
+  const [tab, setTab] = useState('demo')
+
   return (
     <div style={{ maxWidth: 1280, margin: '0 auto', padding: '32px 24px' }}>
 
@@ -199,6 +202,18 @@ export default function App() {
         <p style={{ color: 'var(--text-dim)', fontSize: 13, marginBottom: 16 }}>
           Self-improving agent swarm — memory from Run 1 makes Run 2 faster, cheaper, and smarter
         </p>
+
+        {/* Tab switcher */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+          {[{key:'demo', label:'📊 Demo Overview'}, {key:'generalization', label:'🧠 Generalization Experiment'}].map(t => (
+            <button key={t.key} onClick={() => setTab(t.key)} style={{
+              padding: '7px 18px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer',
+              border: '1px solid var(--border)',
+              background: tab === t.key ? 'var(--accent)' : 'var(--bg2)',
+              color: tab === t.key ? '#fff' : 'var(--text-dim)',
+            }}>{t.label}</button>
+          ))}
+        </div>
 
         {/* Benchmark sourcing callout */}
         <div style={{
@@ -234,6 +249,9 @@ export default function App() {
           </div>
         </div>
       </div>
+
+      {tab === 'generalization' && <Generalization />}
+      {tab !== 'generalization' && <>
 
       {/* Hero stats */}
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 32 }}>
@@ -416,6 +434,7 @@ export default function App() {
             style={{ color: 'var(--accent)', textDecoration: 'none' }}>OctoPack paper (arXiv:2308.07124)</a>
         </span>
       </div>
+      </>}
     </div>
   )
 }

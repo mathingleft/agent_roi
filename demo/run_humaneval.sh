@@ -58,24 +58,37 @@ one_run() {
 # ── Tier functions (each runs sequentially internally) ──────────────
 
 tier1() {
-  local mem="$MEMORY/humaneval_t1.json"
-  echo "━━ TIER 1: Same-bug repeat (op_get_positive × 3) ━━"
-  # Baseline with no memory, then memory compounds across reruns of identical bug
-  one_run "op_get_positive" "t1_run1_baseline" "$mem"
-  one_run "op_get_positive" "t1_run2_memory"   "$mem" "$AGENTS_SLIM"
-  one_run "op_get_positive" "t1_run3_memory"   "$mem" "$AGENTS_SLIM"
+  # 3 problems each repeated 3 times — chains run in parallel, each has own sub-memory
+  # Shows: memory compounds on identical reruns regardless of problem type
+  local mem_a="$MEMORY/humaneval_t1a.json"
+  local mem_b="$MEMORY/humaneval_t1b.json"
+  local mem_c="$MEMORY/humaneval_t1c.json"
+  echo "━━ TIER 1: Same-bug repeat (3 problems × 3 runs, parallel chains) ━━"
+
+  ( one_run "op_get_positive" "t1a_run1" "$mem_a"
+    one_run "op_get_positive" "t1a_run2" "$mem_a" "$AGENTS_SLIM"
+    one_run "op_get_positive" "t1a_run3" "$mem_a" "$AGENTS_SLIM" ) &
+  ( one_run "val_triangle"    "t1b_run1" "$mem_b"
+    one_run "val_triangle"    "t1b_run2" "$mem_b" "$AGENTS_SLIM"
+    one_run "val_triangle"    "t1b_run3" "$mem_b" "$AGENTS_SLIM" ) &
+  ( one_run "var_gcd"         "t1c_run1" "$mem_c"
+    one_run "var_gcd"         "t1c_run2" "$mem_c" "$AGENTS_SLIM"
+    one_run "var_gcd"         "t1c_run3" "$mem_c" "$AGENTS_SLIM" ) &
+  wait
   echo "✓ Tier 1 done"
 }
 
 tier2() {
   local mem="$MEMORY/humaneval_t2.json"
-  echo "━━ TIER 2: Same-domain (operator misuse chain) ━━"
-  # Each new bug benefits from memory of previous operator bugs
+  echo "━━ TIER 2: Same-domain (4 operator misuse bugs, sequential) ━━"
+  # Progressive: each bug benefits more from memory as domain knowledge accumulates
   one_run "op_get_positive" "t2_op_getpos_run1"  "$mem"
   one_run "op_get_positive" "t2_op_getpos_run2"  "$mem" "$AGENTS_SLIM"
   one_run "op_rescale"      "t2_op_rescale_run1" "$mem"
   one_run "op_rescale"      "t2_op_rescale_run2" "$mem" "$AGENTS_SLIM"
-  one_run "op_fizzbuzz"     "t2_op_fizz_run1"    "$mem"   # harder: and→or
+  one_run "op_solve"        "t2_op_solve_run1"   "$mem"
+  one_run "op_solve"        "t2_op_solve_run2"   "$mem" "$AGENTS_SLIM"
+  one_run "op_fizzbuzz"     "t2_op_fizz_run1"    "$mem"
   one_run "op_fizzbuzz"     "t2_op_fizz_run2"    "$mem" "$AGENTS_SLIM"
   echo "✓ Tier 2 done"
 }
