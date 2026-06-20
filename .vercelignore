@@ -2,4 +2,3 @@ pyproject.toml
 src/
 tests/
 demo/
-*.py
