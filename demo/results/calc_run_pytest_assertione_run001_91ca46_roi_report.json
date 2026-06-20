@@ -1,0 +1,72 @@
+{
+  "run_id": "calc_run_pytest_assertione_run001_91ca46",
+  "task_signature": {
+    "source": "pytest",
+    "error_type": "AssertionError",
+    "service": "calc"
+  },
+  "metrics": {
+    "run_id": "calc_run_pytest_assertione_run001_91ca46",
+    "wall_time_sec": 101.185,
+    "tokens_total": 3041,
+    "file_reads": 1,
+    "duplicate_file_reads": 0,
+    "test_runs": 3,
+    "file_edits": 3,
+    "bash_commands": 5,
+    "evidence_published": 0,
+    "blocked_actions": 6,
+    "target_test_passed": true,
+    "full_suite_passed": false,
+    "patch_diff_lines": 0,
+    "test_files_edited": false
+  },
+  "waste_events": [
+    {
+      "waste_type": "bad_routing",
+      "description": "Patch agent started at T=43.2s before reproducer confirmed failure (never confirmed).",
+      "agents_involved": [
+        "patch_agent",
+        "reproducer"
+      ],
+      "timestamp_start": 43.21,
+      "timestamp_end": 43.21,
+      "estimated_cost": 300,
+      "artifacts": [],
+      "severity": "high"
+    }
+  ],
+  "judge_verdict": {
+    "investigation_quality": 0.25,
+    "evidence_utilization": 0.1,
+    "patch_quality": 0.0,
+    "coordination_score": 0.2,
+    "overall_roi": 0.1,
+    "key_insight": "The swarm failed to produce any patch despite 6 blocked file access attempts, indicating severe permission or path resolution issues that prevented agents from doing useful work.",
+    "top_waste": "bad_routing",
+    "confidence": "high",
+    "reasoning": "This run consumed 101 seconds and 3041 tokens but produced zero patch diff lines and failed the full suite. Six blocked actions across multiple agents (code_investigator, log_investigator, patch_agent) suggest fundamental file access problems. The patch agent was routed prematurely before the reproducer confirmed failure, and no evidence was published between agents (0 evidence_published), meaning agents worked in complete silos. The target test passing with 0 patch lines suggests either the test was already passing or there's a metrics anomaly\u2014either way, no actual fix was delivered."
+  },
+  "composite_roi_score": 0.46,
+  "retrospective": "# Retrospective: Agent-Swarm Run\n\n## 1. What Went Well\n- Token usage was relatively modest (3,041 tokens)\n- The system detected and logged blocked file access attempts rather than silently failing\n- Target test technically marked as passing (though this appears anomalous given zero patch lines)\n\n## 2. Key Waste Patterns and Their Impact\n\n**File Access Failures (Critical)**\n- 6 blocked file access attempts across code_investigator, log_investigator, and patch_agent\n- Result: 101 seconds spent with zero productive output\u2014no patch generated despite a trivial one-character fix (`//` \u2192 `/`)\n\n**Zero Evidence Publishing**\n- Agents worked in complete isolation with 0 evidence_published\n- No shared context meant each agent started from scratch, unable to build on others' findings\n\n**Premature Routing**\n- patch_agent started at T=43.2s before reproducer confirmed the failure\n- Wasted downstream work since patch_agent couldn't act on unvalidated assumptions\n\n## 3. Root Cause of the Biggest Inefficiency\n\n**Path resolution or permission misconfiguration** prevented all agents from accessing `calc.py`. The entire swarm was dead on arrival\u2014no agent could read or write the target file. This is an infrastructure failure, not an agent logic failure. The simple fix (`a // b` \u2192 `a / b`) was never attempted because no agent could touch the file.\n\n## 4. Specific Changes for Next Run\n\n1. **Pre-flight file access check**: Before dispatching any agent, validate read/write permissions on target files. Abort early with clear error if blocked.\n\n2. **Gate patch_agent on reproducer confirmation**: Add explicit routing rule: `patch_agent.start REQUIRES reproducer.failure_confirmed == True`\n\n3. **Require evidence handoff**: Block downstream agents until upstream publishes at least one evidence artifact. No silent silos.\n\n4. **Surface blocked-action alerts immediately**: When >2 blocked actions occur in <30s, escalate to orchestrator for early termination or path resolution.\n\n5. **Validate working directory**: Log and verify `cwd` at agent spawn\u2014likely the path mismatch source.",
+  "prompt_patches": {
+    "patch_agent": [
+      "Do not begin writing or attempting patches until the reproducer agent has explicitly confirmed the failure can be reproduced.",
+      "If you encounter file access errors or permission issues, immediately report the specific error and file path to the orchestrator rather than retrying silently.",
+      "Wait for a clear signal that the bug has been verified before starting patch work to avoid wasted effort on unconfirmed issues."
+    ],
+    "reproducer": [
+      "Emit a clear, explicit confirmation message (e.g., 'FAILURE CONFIRMED: [test details]') before any other agent proceeds with patching.",
+      "If reproduction fails or encounters blocking issues, immediately escalate with specific error details rather than proceeding silently."
+    ]
+  },
+  "routing_update": {
+    "patch_agent_start_condition": "reproducer_confirmed_failure",
+    "agent_order": [
+      "reproducer",
+      "localizer",
+      "patch_generator",
+      "verifier"
+    ]
+  }
+}

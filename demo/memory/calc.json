@@ -4,6 +4,161 @@
       "description": "",
       "created_at": "2026-06-20T11:58:39.021397+00:00",
       "playbook": {
+        "routing_rules": [
+          {
+            "id": "804f72577a04",
+            "entry_type": "routing_rule",
+            "content": {
+              "patch_agent_start_condition": "reproducer_confirmed_failure",
+              "agent_order": [
+                "reproducer",
+                "localizer",
+                "patch_generator",
+                "verifier"
+              ]
+            },
+            "trajectory_id": "calc_run1",
+            "task_signature_key": "pytest|assertionerror|calc",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T12:00:48.139468+00:00",
+            "updated_at": "2026-06-20T12:00:48.139478+00:00",
+            "metadata": {}
+          }
+        ],
+        "prompt_patches": {
+          "patch_agent": [
+            {
+              "id": "1c5854a7b973",
+              "entry_type": "prompt_patch",
+              "content": "Do not begin writing or attempting patches until the reproducer agent has explicitly confirmed the failure can be reproduced.",
+              "trajectory_id": "calc_run1",
+              "task_signature_key": "pytest|assertionerror|calc",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T12:00:48.125727+00:00",
+              "updated_at": "2026-06-20T12:00:48.125762+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "250286bac32e",
+              "entry_type": "prompt_patch",
+              "content": "If you encounter file access errors or permission issues, immediately report the specific error and file path to the orchestrator rather than retrying silently.",
+              "trajectory_id": "calc_run1",
+              "task_signature_key": "pytest|assertionerror|calc",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T12:00:48.126643+00:00",
+              "updated_at": "2026-06-20T12:00:48.126668+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "115a2ea65a2c",
+              "entry_type": "prompt_patch",
+              "content": "Wait for a clear signal that the bug has been verified before starting patch work to avoid wasted effort on unconfirmed issues.",
+              "trajectory_id": "calc_run1",
+              "task_signature_key": "pytest|assertionerror|calc",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T12:00:48.136874+00:00",
+              "updated_at": "2026-06-20T12:00:48.136915+00:00",
+              "metadata": {}
+            }
+          ],
+          "reproducer": [
+            {
+              "id": "e14e99bd10e5",
+              "entry_type": "prompt_patch",
+              "content": "Emit a clear, explicit confirmation message (e.g., 'FAILURE CONFIRMED: [test details]') before any other agent proceeds with patching.",
+              "trajectory_id": "calc_run1",
+              "task_signature_key": "pytest|assertionerror|calc",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T12:00:48.138368+00:00",
+              "updated_at": "2026-06-20T12:00:48.138398+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "2e2c0f13c5cd",
+              "entry_type": "prompt_patch",
+              "content": "If reproduction fails or encounters blocking issues, immediately escalate with specific error details rather than proceeding silently.",
+              "trajectory_id": "calc_run1",
+              "task_signature_key": "pytest|assertionerror|calc",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T12:00:48.139007+00:00",
+              "updated_at": "2026-06-20T12:00:48.139020+00:00",
+              "metadata": {}
+            }
+          ]
+        },
+        "waste_patterns": [
+          {
+            "id": "6cdbec83b772",
+            "entry_type": "waste_pattern",
+            "content": "Patch agent started at T=43.2s before reproducer confirmed failure (never confirmed).",
+            "trajectory_id": "calc_run1",
+            "task_signature_key": "pytest|assertionerror|calc",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T12:00:48.139904+00:00",
+            "updated_at": "2026-06-20T12:00:48.139922+00:00",
+            "metadata": {
+              "waste_type": "bad_routing",
+              "severity": "high"
+            }
+          }
+        ],
+        "high_roi_context": [
+          {
+            "id": "c42e7768eb18",
+            "entry_type": "high_roi_context",
+            "content": "Judge insight: The swarm failed to produce any patch despite 6 blocked file access attempts, indicating severe permission or path resolution issues that prevented agents from doing useful work.",
+            "trajectory_id": "calc_run1",
+            "task_signature_key": "pytest|assertionerror|calc",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T12:00:48.140738+00:00",
+            "updated_at": "2026-06-20T12:00:48.140758+00:00",
+            "metadata": {}
+          }
+        ],
+        "episodic": [
+          {
+            "id": "3afa759f3a01",
+            "entry_type": "episodic_record",
+            "content": {
+              "run_id": "calc_run_pytest_assertione_run001_91ca46",
+              "roi_score": 0.46,
+              "wall_time_sec": 101.185,
+              "tokens": 3041,
+              "target_pass": true,
+              "retrospective_snippet": "# Retrospective: Agent-Swarm Run\n\n## 1. What Went Well\n- Token usage was relatively modest (3,041 tokens)\n- The system detected and logged blocked file access attempts rather than silently failing\n- Target test technically marked as passing (though this appears anomalous given zero patch lines)\n\n## "
+            },
+            "trajectory_id": "calc_run1",
+            "task_signature_key": "pytest|assertionerror|calc",
+            "agent_role": "",
+            "helpful_count": 1,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T12:00:48.141507+00:00",
+            "updated_at": "2026-06-20T12:00:48.141524+00:00",
+            "metadata": {}
+          }
+        ]
+      }
+    },
+    "calc_run2": {
+      "description": "",
+      "created_at": "2026-06-20T12:00:52.561727+00:00",
+      "playbook": {
         "routing_rules": [],
         "prompt_patches": {},
         "waste_patterns": [],
@@ -12,5 +167,39 @@
       }
     }
   },
-  "global_playbook": {}
+  "global_playbook": {
+    "waste_patterns": [
+      {
+        "id": "6cdbec83b772",
+        "entry_type": "waste_pattern",
+        "content": "Patch agent started at T=43.2s before reproducer confirmed failure (never confirmed).",
+        "trajectory_id": "calc_run1",
+        "task_signature_key": "pytest|assertionerror|calc",
+        "agent_role": "",
+        "helpful_count": 0,
+        "harmful_count": 0,
+        "created_at": "2026-06-20T12:00:48.139904+00:00",
+        "updated_at": "2026-06-20T12:00:48.139922+00:00",
+        "metadata": {
+          "waste_type": "bad_routing",
+          "severity": "high"
+        }
+      }
+    ],
+    "high_roi_context": [
+      {
+        "id": "c42e7768eb18",
+        "entry_type": "high_roi_context",
+        "content": "Judge insight: The swarm failed to produce any patch despite 6 blocked file access attempts, indicating severe permission or path resolution issues that prevented agents from doing useful work.",
+        "trajectory_id": "calc_run1",
+        "task_signature_key": "pytest|assertionerror|calc",
+        "agent_role": "",
+        "helpful_count": 0,
+        "harmful_count": 0,
+        "created_at": "2026-06-20T12:00:48.140738+00:00",
+        "updated_at": "2026-06-20T12:00:48.140758+00:00",
+        "metadata": {}
+      }
+    ]
+  }
 }

@@ -33,20 +33,32 @@ function Badge({ ok }) {
   )
 }
 
-function StatCard({ label, value, sub, color, delta }) {
+function StatCard({ label, v1, v2, sub, color, delta }) {
   return (
     <div style={{
       background: 'var(--bg2)', border: '1px solid var(--border)',
-      borderRadius: 12, padding: '20px 24px', flex: 1, minWidth: 140,
+      borderRadius: 12, padding: '16px 20px', flex: 1, minWidth: 130,
     }}>
-      <div style={{ fontSize: 11, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: 1 }}>{label}</div>
-      <div style={{ fontSize: 32, fontWeight: 700, color: color || 'var(--text-h)', marginTop: 4, fontFamily: 'var(--mono)' }}>{value}</div>
+      <div style={{ fontSize: 10, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>{label}</div>
+      {v2 != null ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-dim)', fontFamily: 'var(--mono)', lineHeight: 1 }}>{v1}</div>
+          <div style={{ fontSize: 10, color: 'var(--text-dim)', lineHeight: 1 }}>↓</div>
+          <div style={{ fontSize: 22, fontWeight: 700, color: color || 'var(--text-h)', fontFamily: 'var(--mono)', lineHeight: 1 }}>{v2}</div>
+        </div>
+      ) : (
+        <div style={{ fontSize: 26, fontWeight: 700, color: color || 'var(--text-h)', fontFamily: 'var(--mono)' }}>{v1}</div>
+      )}
       {delta != null && (
-        <div style={{ fontSize: 12, fontWeight: 600, color: delta >= 0 ? '#4ade80' : '#f87171', marginTop: 2 }}>
-          {delta >= 0 ? '▲' : '▼'} {Math.abs(delta)}%
+        <div style={{ fontSize: 11, fontWeight: 600, marginTop: 6,
+          color: delta <= 0 && label.toLowerCase().includes('roi') ? '#f87171'
+               : delta >= 0 && label.toLowerCase().includes('roi') ? '#4ade80'
+               : delta <= 0 ? '#4ade80' : '#f87171'
+        }}>
+          {delta > 0 ? '▲' : '▼'} {Math.abs(delta)}%
         </div>
       )}
-      {sub && <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 2 }}>{sub}</div>}
+      {sub && <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 4 }}>{sub}</div>}
     </div>
   )
 }
@@ -191,23 +203,23 @@ export default function App() {
 
       {/* Hero stats */}
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 32 }}>
-        <StatCard label="ROI  1→2"
-          value={hasPairs ? `${avgRoi1.toFixed(2)} → ${avgRoi2.toFixed(2)}` : avgRoi1.toFixed(3)}
+        <StatCard label="ROI"
+          v1={avgRoi1.toFixed(3)} v2={hasPairs ? avgRoi2.toFixed(3) : null}
           color="var(--accent)" delta={roiDelta} />
-        <StatCard label="Wall Time  1→2"
-          value={hasPairs ? `${avgWall1.toFixed(0)}s → ${avgWall2.toFixed(0)}s` : `${avgWall1.toFixed(0)}s`}
+        <StatCard label="Wall Time"
+          v1={`${avgWall1.toFixed(0)}s`} v2={hasPairs ? `${avgWall2.toFixed(0)}s` : null}
           color="var(--accent4)" delta={wallDelta} />
-        <StatCard label="Tokens  1→2"
-          value={hasPairs ? `${Math.round(avgTok1/100)*100}→${Math.round(avgTok2/100)*100}` : Math.round(avgTok1).toLocaleString()}
+        <StatCard label="Tokens"
+          v1={Math.round(avgTok1).toLocaleString()} v2={hasPairs ? Math.round(avgTok2).toLocaleString() : null}
           color="var(--accent2)" delta={tokDelta} />
-        <StatCard label="File Reads  1→2"
-          value={hasPairs ? `${avgReads1.toFixed(1)} → ${avgReads2.toFixed(1)}` : avgReads1.toFixed(1)}
+        <StatCard label="File Reads"
+          v1={avgReads1.toFixed(1)} v2={hasPairs ? avgReads2.toFixed(1) : null}
           color="#60a5fa" delta={readsDelta} />
-        <StatCard label="Dup Reads  1→2"
-          value={hasPairs ? `${avgDups1.toFixed(1)} → ${avgDups2.toFixed(1)}` : avgDups1.toFixed(1)}
+        <StatCard label="Dup Reads"
+          v1={avgDups1.toFixed(1)} v2={hasPairs ? avgDups2.toFixed(1) : null}
           color="#f87171" delta={dupsDelta} />
-        <StatCard label="Waste Detected" value={totalWaste} sub="stored in memory" />
-        <StatCard label="Runs" value={`${completedRuns.length}/${runs.length}`} sub="complete" />
+        <StatCard label="Waste" v1={totalWaste} sub="events detected" />
+        <StatCard label="Runs" v1={`${completedRuns.length}/${runs.length}`} sub="complete" />
       </div>
 
       {/* ROI + Wall time row */}
