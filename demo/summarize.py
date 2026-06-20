@@ -26,11 +26,22 @@ def load_reports(results_dir: Path) -> list[dict]:
     return reports
 
 
+def _tier_from_trajectory(traj: str) -> str | None:
+    """Extract tier label from humaneval trajectory IDs like t1_*, t2_*, t3_*."""
+    if traj.startswith("t1_"): return "tier1_repeat"
+    if traj.startswith("t2_"): return "tier2_same_domain"
+    if traj.startswith("t3_"): return "tier3_cross_domain"
+    return None
+
+
 def extract_row(r: dict) -> dict:
     m = r.get("metrics", {})
     sig = r.get("task_signature", {})
+    traj = r.get("run_id", "")
+    tier = _tier_from_trajectory(traj)
     return {
-        "run_id": r.get("run_id", "?")[-20:],
+        "run_id": traj[-20:],
+        "trajectory": traj,
         "service": sig.get("service", "?"),
         "roi": r.get("composite_roi_score", 0),
         "tokens": m.get("tokens_total", 0),
@@ -40,11 +51,12 @@ def extract_row(r: dict) -> dict:
         "target_pass": m.get("target_test_passed", False),
         "suite_pass": m.get("full_suite_passed", False),
         "wall_time": m.get("wall_time_sec", 0),
+        "tier": tier,
         "file": r.get("_file", ""),
     }
 
 
-def main(results_dir: Path):
+def main(results_dir: Path, output: Path | None = None):
     reports = load_reports(results_dir)
     if not reports:
         console.print("[red]No reports found in[/] " + str(results_dir))
@@ -111,11 +123,15 @@ def main(results_dir: Path):
             for svc in set(r.get("task_signature", {}).get("service", "") for r in reports)
         },
     }
-    summary_path = results_dir / "summary.json"
+    summary_path = output if output else results_dir / "summary.json"
     summary_path.write_text(json.dumps(summary, indent=2))
     console.print(f"\n[dim]Summary written → {summary_path}[/]")
 
 
 if __name__ == "__main__":
-    results_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("demo/results")
-    main(results_dir)
+    args = sys.argv[1:]
+    results_dir = Path(args[0]) if args else Path("demo/results")
+    output = None
+    if "--output" in args:
+        output = Path(args[args.index("--output") + 1])
+    main(results_dir, output)

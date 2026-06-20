@@ -1,0 +1,1 @@
+{"group": "C_variable", "entry_point": "greatest_common_divisor", "bug_desc": "greatest_common_divisor() returns `b` instead of `a` after the while loop. When loop exits, b==0 and a holds the GCD.", "fix_hint": "Change `return b` to `return a`."}

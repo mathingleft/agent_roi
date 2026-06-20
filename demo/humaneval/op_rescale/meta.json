@@ -1,0 +1,1 @@
+{"group": "A_operator", "entry_point": "rescale_to_unit", "bug_desc": "rescale_to_unit() divides by (max + min) instead of (max - min), producing wrong normalized values.", "fix_hint": "Change `max_number + min_number` to `max_number - min_number` in the return expression."}

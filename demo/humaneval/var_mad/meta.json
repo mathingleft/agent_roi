@@ -1,0 +1,1 @@
+{"group": "C_variable", "entry_point": "mean_absolute_deviation", "bug_desc": "mean_absolute_deviation() divides by `mean` instead of `len(numbers)`, giving wrong result.", "fix_hint": "Change `/ mean` to `/ len(numbers)` in the return statement."}

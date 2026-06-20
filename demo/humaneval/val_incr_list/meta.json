@@ -1,0 +1,1 @@
+{"group": "B_value", "entry_point": "incr_list", "bug_desc": "incr_list() adds 2 to each element instead of 1. Change `e + 2` to `e + 1`.", "fix_hint": "Change `e + 2` to `e + 1` in the list comprehension."}

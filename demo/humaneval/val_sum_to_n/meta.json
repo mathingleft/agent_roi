@@ -1,0 +1,1 @@
+{"group": "B_value", "entry_point": "sum_to_n", "bug_desc": "sum_to_n() uses range(n) which excludes n, giving sum 1..n-1 instead of 1..n.", "fix_hint": "Change `range(n)` to `range(n + 1)` so n is included."}

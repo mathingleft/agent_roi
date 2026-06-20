@@ -1,0 +1,1 @@
+{"group": "B_value", "entry_point": "triangle_area", "bug_desc": "triangle_area() divides by 0.5 instead of 2.0, returning 4x the correct area.", "fix_hint": "Change `/ 0.5` to `/ 2.0` in the return statement."}

@@ -1,0 +1,1 @@
+{"group": "A_operator", "entry_point": "solve", "bug_desc": "solve() indexes the last digit `[-1]` instead of summing all digits with `sum()`.", "fix_hint": "Change `[int(i) for i in str(N)][-1]` to `sum(int(i) for i in str(N))`."}

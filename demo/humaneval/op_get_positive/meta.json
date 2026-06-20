@@ -1,0 +1,1 @@
+{"group": "A_operator", "entry_point": "get_positive", "bug_desc": "get_positive() uses `e > -1` instead of `e > 0`, so 0 is incorrectly included in results.", "fix_hint": "Change `e > -1` to `e > 0` in the list comprehension."}

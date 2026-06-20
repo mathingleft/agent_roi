@@ -1,0 +1,1 @@
+{"group": "C_variable", "entry_point": "decode_shift", "bug_desc": "decode_shift() adds `ord(ch)` instead of `ord('a')` as the base, producing garbage characters.", "fix_hint": "Change `+ ord(ch)` to `+ ord("a")` in the chr() expression."}
