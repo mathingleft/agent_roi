@@ -125,7 +125,7 @@ export default function App() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [selectedRun, setSelectedRun] = useState(null)
-  const [tab, setTab] = useState('demo')
+  const [tab, setTab] = useState('generalization')
 
   useEffect(() => {
     fetch('/summary.json')
@@ -202,17 +202,6 @@ export default function App() {
           Self-improving agent swarm — memory from Run 1 makes Run 2 faster, cheaper, and smarter
         </p>
 
-        {/* Tab switcher */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
-          {[{key:'demo', label:'📊 Demo Overview'}, {key:'generalization', label:'🧠 Generalization Experiment'}].map(t => (
-            <button key={t.key} onClick={() => setTab(t.key)} style={{
-              padding: '7px 18px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer',
-              border: '1px solid var(--border)',
-              background: tab === t.key ? 'var(--accent)' : 'var(--bg2)',
-              color: tab === t.key ? '#fff' : 'var(--text-dim)',
-            }}>{t.label}</button>
-          ))}
-        </div>
 
         {/* Benchmark sourcing callout */}
         <div style={{
@@ -230,11 +219,10 @@ export default function App() {
               bigcode/humanevalpack
             </a>
             {' '}(OctoPack, Muennighoff et al. 2023). 9 Python bug-fix instances manually
-            selected and categorized into three generalization tiers.
+            selected and categorized into two generalization tiers.
           </div>
           <div style={{ flex: 3, minWidth: 300, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {[
-              { tier: 'Tier 1', label: 'Same-bug repeat', desc: 'op_get_positive ×3 — identical bug, ROI/speed compounds each rerun', color: '#7c6af7' },
               { tier: 'Tier 2', label: 'Same-domain', desc: 'op_get_positive → op_rescale → op_fizzbuzz — all operator misuse, memory transfers across different bugs', color: '#4ade80' },
               { tier: 'Tier 3', label: 'Cross-domain', desc: 'val_* (value misuse) → var_rolling_max (variable misuse) — strategies generalize across unrelated bug categories', color: '#facc15' },
             ].map(({ tier, label, desc, color }) => (
@@ -250,6 +238,7 @@ export default function App() {
       </div>
 
       {tab === 'generalization' && <Generalization />}
+      {tab !== 'generalization' && <div style={{display:'none'}}></div>}
       {tab !== 'generalization' && <>
 
       {/* Hero stats */}

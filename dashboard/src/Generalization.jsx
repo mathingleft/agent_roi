@@ -104,7 +104,7 @@ function Tier2Chart({ runs, metric = 'roi' }) {
   })
 
   const label = metric === 'roi' ? 'ROI Score' : metric === 'tokens' ? 'Tokens' : metric
-  const domain = metric === 'roi' ? [0, 1] : [0, 'auto']
+  const domain = metric === 'roi' ? [0, 2] : [0, 'auto']
   const fmt = metric === 'roi' ? v => v?.toFixed(3) : v => v
 
   return (
@@ -158,7 +158,7 @@ function Tier3Chart({ runs, metric = 'roi' }) {
       <BarChart data={data} barCategoryGap="30%">
         <CartesianGrid {...gridStyle} />
         <XAxis dataKey="bug" tick={axisStyle} />
-        <YAxis domain={metric === 'roi' ? [0, 1] : [0, 'auto']} tick={axisStyle}
+        <YAxis domain={metric === 'roi' ? [0, 2] : [0, 'auto']} tick={axisStyle}
           tickFormatter={metric === 'roi' ? v => v.toFixed(1) : undefined} />
         <Tooltip contentStyle={{ background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: 8 }}
           formatter={(v, name) => [fmt(v), name]} />
@@ -209,7 +209,6 @@ export default function Generalization() {
   }, [])
 
   const runs = data?.runs ?? []
-  const t1runs = runs.filter(r => r.trajectory?.startsWith('t1'))
   const t2runs = runs.filter(r => r.trajectory?.startsWith('t2'))
   const t3runs = runs.filter(r => r.trajectory?.startsWith('t3'))
 
@@ -235,9 +234,6 @@ export default function Generalization() {
     }
   }
 
-  // T1: group by chain letter (t1a/t1b/t1c)
-  const t1delta = avgDeltaByChain(t1runs, r => r.trajectory?.match(/^(t1[abc])/)?.[1] ?? r.trajectory)
-  // T2/T3: group by service (sequential bugs)
   const t2delta = avgDeltaByChain(t2runs, r => r.service)
   const t3delta = avgDeltaByChain(t3runs, r => r.service)
 
@@ -262,15 +258,12 @@ export default function Generalization() {
           Last updated: {lastUpdated.toLocaleTimeString()}
         </span>}
         <span style={{ fontSize: 11, color: 'var(--text-dim)', marginLeft: 'auto' }}>
-          {t1runs.length} T1 · {t2runs.length} T2 · {t3runs.length} T3 runs complete
+          {t2runs.length} T2 · {t3runs.length} T3 runs complete
         </span>
       </div>
 
       {/* Tier stat strip */}
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 24 }}>
-        <TierStat label="T1 avg Δ ROI" color="#7c6af7"
-          value={t1delta ? (t1delta.roi >= 0 ? '+' : '') + t1delta.roi.toFixed(3) : '—'}
-          sub={t1delta ? `tokens ${t1delta.tok > 0 ? '+' : ''}${Math.round(t1delta.tok)}` : 'same-bug repeat'} />
         <TierStat label="T2 avg Δ ROI" color="#4ade80"
           value={t2delta ? (t2delta.roi >= 0 ? '+' : '') + t2delta.roi.toFixed(3) : '—'}
           sub={t2delta ? `tokens ${t2delta.tok > 0 ? '+' : ''}${Math.round(t2delta.tok)}` : 'same-domain'} />
@@ -278,7 +271,7 @@ export default function Generalization() {
           value={t3delta ? (t3delta.roi >= 0 ? '+' : '') + t3delta.roi.toFixed(3) : '—'}
           sub={t3delta ? `tokens ${t3delta.tok > 0 ? '+' : ''}${Math.round(t3delta.tok)}` : 'cross-domain'} />
         <TierStat label="Total runs" color="var(--text-h)"
-          value={runs.length} sub={`of ~19 expected`} />
+          value={t2runs.length + t3runs.length} sub={`T2 + T3 runs`} />
       </div>
 
       {/* Metric selector */}
@@ -293,22 +286,12 @@ export default function Generalization() {
         ))}
       </div>
 
-      {/* Three tier charts */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
-        <ChartCard title="🔁 Tier 1 — Same-bug repeat: ROI per run">
-          <Tier1Chart runs={t1runs} />
-          <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 8 }}>
-            3 problems × 3 runs each (parallel chains, own memory). Claim: ROI improves with each identical rerun.
-          </div>
-        </ChartCard>
-
-        <ChartCard title="🎯 Tier 2 — Same-domain transfer: operator misuse chain">
-          <Tier2Chart runs={t2runs} metric={metric} />
-          <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 8 }}>
-            4 operator bugs run sequentially, shared memory. Claim: run2 improvement grows as domain memory accumulates.
-          </div>
-        </ChartCard>
-      </div>
+      <ChartCard title="🎯 Tier 2 — Same-domain transfer: operator misuse chain" style={{ marginBottom: 20 }}>
+        <Tier2Chart runs={t2runs} metric={metric} />
+        <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 8 }}>
+          4 operator bugs run sequentially, shared memory. Claim: run2 improves as same-domain memory accumulates.
+        </div>
+      </ChartCard>
 
       <ChartCard title="🌐 Tier 3 — Cross-domain transfer: value misuse → variable misuse">
         <Tier3Chart runs={t3runs} metric={metric} />
