@@ -28,9 +28,8 @@ def load_reports(results_dir: Path) -> list[dict]:
 
 def _tier_from_trajectory(traj: str) -> str | None:
     """Extract tier label from humaneval trajectory IDs like t1_*, t1a_*, t2_*, t3_*."""
-    if traj.startswith("t1"): return "tier1_repeat"
-    if traj.startswith("t2"): return "tier2_same_domain"
-    if traj.startswith("t3"): return "tier3_cross_domain"
+    if traj.startswith("t1"): return "tier1_same_domain"
+    if traj.startswith("t2"): return "tier2_cross_domain"
     return None
 
 
