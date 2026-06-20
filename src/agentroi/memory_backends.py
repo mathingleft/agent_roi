@@ -22,11 +22,11 @@ from .schemas import (
 )
 
 _DEFAULT_BLOCKED: dict[str, list[str]] = {
-    AgentRole.LOG_INVESTIGATOR.value: ["file_edit"],
-    AgentRole.CODE_INVESTIGATOR.value: ["file_edit"],
-    AgentRole.REPRODUCER.value: ["file_edit"],
-    AgentRole.PATCH_AGENT.value: ["edit_test_files"],
-    AgentRole.VERIFIER.value: ["file_edit"],
+    AgentRole.LOG_INVESTIGATOR.value:  ["edit_test_files"],
+    AgentRole.CODE_INVESTIGATOR.value: ["edit_test_files"],
+    AgentRole.REPRODUCER.value:        ["edit_test_files"],
+    AgentRole.PATCH_AGENT.value:       ["edit_test_files"],
+    AgentRole.VERIFIER.value:          ["edit_test_files"],
 }
 
 _DEFAULT_ROUTING = {
