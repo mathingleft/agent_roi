@@ -1,0 +1,54 @@
+╭────────────────────────────────── AgentROI ──────────────────────────────────╮
+│ Task: greatest_common_divisor() returns `b` instead of `a` after the while   │
+│ loop. When loop exits, b==0 and a holds the GCD. Fix the bug in solution.py. │
+│ The function is greatest_common_divisor(). Do NOT edit                       │
+│ Trajectory: t1c_run2  Iterations: 1                                          │
+│ CWD: /home/jack/Sync/New                                                     │
+│ Documents/Projects/hackathons/agent_roi/demo/humaneval/var_gcd  Backend: ace │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭────────────────────────────── AgentROI Result ───────────────────────────────╮
+│ Composite ROI: 0.309    run_id=t1c_run2_pytest_assertione_run001_5d22ff      │
+│ trajectory=t1c_run2                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+                              
+  Metric               Value  
+ ──────────────────────────── 
+  Wall time            99.7s  
+  Tokens (est)          3569  
+  File reads               7  
+  Duplicate reads          3  
+  Test runs                2  
+  Evidence published       0  
+  Target test passed       ✗  
+  Full suite passed        ✓  
+  Test files edited    clean  
+                              
+Waste events detected (4):
+  •  duplicate_file_read: File '/home/jack/Sync/New 
+Documents/Projects/hackathons/agent_roi/demo/humaneval/var_gcd/solution.py
+  •  duplicate_file_read: File '/home/jack/Sync/New 
+Documents/Projects/hackathons/agent_roi/demo/humaneval/var_gcd/tests/test_
+  •  premature_full_suite: Full test suite run at T=77.0s by 'verifier' before 
+target test confirmed passing (never).
+  •  bad_routing: Patch agent started at T=0.0s before reproducer confirmed 
+failure (never confirmed).
+
+Judge insight: The swarm failed its primary objective despite a trivial bug fix,
+with severe coordination failures including parallel agent starts, zero evidence
+publishing, and 7 blocked actions indicating sandbox/path confusion.
+
+Retrospective: # Retrospective: GCD Bug Fix Run
+
+## What Went Well
+- The patch itself was correct (2-line diff, minimal change)
+- Full test suite passed, indicating no regressions introduced
+- Total token usage was reasonable (3,569 tokens)
+
+## Key Waste Patterns and Their Impact
+
+**1. Catastrophic Parallel Start 
+
+Report written → /home/jack/Sync/New 
+Documents/Projects/hackathons/agent_roi/demo/results_humaneval/t1c_run2_pytest_a
+ssertione_run001_5d22ff_roi_report.json

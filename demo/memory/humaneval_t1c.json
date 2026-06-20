@@ -1,0 +1,907 @@
+{
+  "trajectories": {
+    "t1c_run1": {
+      "description": "",
+      "created_at": "2026-06-20T13:00:04.920468+00:00",
+      "playbook": {
+        "routing_rules": [
+          {
+            "id": "777544575cb7",
+            "entry_type": "routing_rule",
+            "content": {
+              "first_agent": "reproducer",
+              "second_agent": "log_investigator",
+              "patch_agent_start_condition": "reproducer has confirmed test failure with specific error message",
+              "full_suite_condition": "target test passes AND patch has been validated by verifier on target test only",
+              "agent_order": [
+                "reproducer",
+                "log_investigator",
+                "patch_agent",
+                "verifier"
+              ]
+            },
+            "trajectory_id": "t1c_run1",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:03:46.274005+00:00",
+            "updated_at": "2026-06-20T13:03:46.274016+00:00",
+            "metadata": {}
+          }
+        ],
+        "prompt_patches": {
+          "log_investigator": [
+            {
+              "id": "0cf2a9b9611a",
+              "entry_type": "prompt_patch",
+              "content": "After reading a file, immediately publish its contents or key excerpts to the evidence log so other agents can reference it without re-reading.",
+              "trajectory_id": "t1c_run1",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "log_investigator",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:03:46.258953+00:00",
+              "updated_at": "2026-06-20T13:03:46.258985+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "4800ee90fefa",
+              "entry_type": "prompt_patch",
+              "content": "For simple bug descriptions mentioning specific return value errors, extract and publish the exact line numbers and current code within 30 seconds.",
+              "trajectory_id": "t1c_run1",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "log_investigator",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:03:46.259760+00:00",
+              "updated_at": "2026-06-20T13:03:46.259778+00:00",
+              "metadata": {}
+            }
+          ],
+          "reproducer": [
+            {
+              "id": "07fbba622ab7",
+              "entry_type": "prompt_patch",
+              "content": "Run ONLY the specific failing test first and confirm it fails before running any full test suite.",
+              "trajectory_id": "t1c_run1",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:03:46.268755+00:00",
+              "updated_at": "2026-06-20T13:03:46.268793+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "4220473fa05e",
+              "entry_type": "prompt_patch",
+              "content": "Publish explicit 'FAILURE_CONFIRMED' or 'FAILURE_NOT_CONFIRMED' status to the evidence log within 60 seconds of starting.",
+              "trajectory_id": "t1c_run1",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:03:46.269721+00:00",
+              "updated_at": "2026-06-20T13:03:46.269740+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "4e0976843c27",
+              "entry_type": "prompt_patch",
+              "content": "Do not run full test suites until the target test has been confirmed as failing in isolation.",
+              "trajectory_id": "t1c_run1",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:03:46.270236+00:00",
+              "updated_at": "2026-06-20T13:03:46.270249+00:00",
+              "metadata": {}
+            }
+          ],
+          "patch_agent": [
+            {
+              "id": "b8cd9a0202e9",
+              "entry_type": "prompt_patch",
+              "content": "Do not begin patch work until you see explicit 'FAILURE_CONFIRMED' evidence from the reproducer in the shared log.",
+              "trajectory_id": "t1c_run1",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:03:46.270692+00:00",
+              "updated_at": "2026-06-20T13:03:46.270703+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "4025b41e9a0b",
+              "entry_type": "prompt_patch",
+              "content": "Check the evidence log for file contents already published by other agents before reading files yourself.",
+              "trajectory_id": "t1c_run1",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:03:46.271136+00:00",
+              "updated_at": "2026-06-20T13:03:46.271156+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "d0493872163b",
+              "entry_type": "prompt_patch",
+              "content": "When patch application is blocked, immediately report the blocking reason and try an alternative approach within 10 seconds.",
+              "trajectory_id": "t1c_run1",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:03:46.271658+00:00",
+              "updated_at": "2026-06-20T13:03:46.271673+00:00",
+              "metadata": {}
+            }
+          ],
+          "verifier": [
+            {
+              "id": "9310785d7a80",
+              "entry_type": "prompt_patch",
+              "content": "Before reading source files, check the evidence log for file contents already published by log_investigator or code_investigator.",
+              "trajectory_id": "t1c_run1",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:03:46.272263+00:00",
+              "updated_at": "2026-06-20T13:03:46.272277+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "714b9f02ae97",
+              "entry_type": "prompt_patch",
+              "content": "Run only the specific target test first; only run full suite after target test passes.",
+              "trajectory_id": "t1c_run1",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:03:46.272791+00:00",
+              "updated_at": "2026-06-20T13:03:46.272812+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "34e01d4d4b2b",
+              "entry_type": "prompt_patch",
+              "content": "Do not start verification until patch_agent has published 'PATCH_APPLIED' status to the evidence log.",
+              "trajectory_id": "t1c_run1",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:03:46.273397+00:00",
+              "updated_at": "2026-06-20T13:03:46.273410+00:00",
+              "metadata": {}
+            }
+          ]
+        },
+        "waste_patterns": [
+          {
+            "id": "a46cb915e501",
+            "entry_type": "waste_pattern",
+            "content": "File '/home/jack/Sync/New Documents/Projects/hackathons/agent_roi/demo/humaneval/var_gcd/solution.py' read by 3 different agents (log_investigator, patch_agent, verifier) \u2014 potential duplicated investigation.",
+            "trajectory_id": "t1c_run1",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:03:46.274779+00:00",
+            "updated_at": "2026-06-20T13:03:46.274796+00:00",
+            "metadata": {
+              "waste_type": "duplicate_file_read",
+              "severity": "high"
+            }
+          },
+          {
+            "id": "9a678124b1c1",
+            "entry_type": "waste_pattern",
+            "content": "Full test suite run at T=55.4s by 'reproducer' before target test confirmed passing (never).",
+            "trajectory_id": "t1c_run1",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:03:46.275521+00:00",
+            "updated_at": "2026-06-20T13:03:46.275533+00:00",
+            "metadata": {
+              "waste_type": "premature_full_suite",
+              "severity": "high"
+            }
+          },
+          {
+            "id": "8cfd6a257c39",
+            "entry_type": "waste_pattern",
+            "content": "Full test suite run at T=128.3s by 'verifier' before target test confirmed passing (never).",
+            "trajectory_id": "t1c_run1",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:03:46.276363+00:00",
+            "updated_at": "2026-06-20T13:03:46.276375+00:00",
+            "metadata": {
+              "waste_type": "premature_full_suite",
+              "severity": "high"
+            }
+          },
+          {
+            "id": "03dfb738fd97",
+            "entry_type": "waste_pattern",
+            "content": "Patch agent started at T=63.4s before reproducer confirmed failure (never confirmed).",
+            "trajectory_id": "t1c_run1",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:03:46.277266+00:00",
+            "updated_at": "2026-06-20T13:03:46.277282+00:00",
+            "metadata": {
+              "waste_type": "bad_routing",
+              "severity": "high"
+            }
+          }
+        ],
+        "high_roi_context": [
+          {
+            "id": "49c8e24bf45b",
+            "entry_type": "high_roi_context",
+            "content": "Judge insight: The swarm failed completely despite a trivially simple bug (return b instead of return a), with agents unable to apply patches due to 9 blocked actions and zero evidence published between agents.",
+            "trajectory_id": "t1c_run1",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:03:46.278258+00:00",
+            "updated_at": "2026-06-20T13:03:46.278273+00:00",
+            "metadata": {}
+          }
+        ],
+        "episodic": [
+          {
+            "id": "9e23b99cadf6",
+            "entry_type": "episodic_record",
+            "content": {
+              "run_id": "t1c_run1_pytest_assertione_run001_4d0a20",
+              "roi_score": 0.185,
+              "wall_time_sec": 190.63,
+              "tokens": 3845,
+              "target_pass": false,
+              "retrospective_snippet": "## Retrospective: GCD Bug Fix Run\n\n### What Went Well\n- Agents correctly identified the target file and understood the bug location\n- The task was trivially simple (change `return b` to `return a`)\n- Test infrastructure functioned correctly\n\n### Key Waste Patterns and Their Impact\n\n1. **9 Blocked Ac"
+            },
+            "trajectory_id": "t1c_run1",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:03:46.279257+00:00",
+            "updated_at": "2026-06-20T13:03:46.279271+00:00",
+            "metadata": {}
+          }
+        ]
+      }
+    },
+    "t1c_run2": {
+      "description": "",
+      "created_at": "2026-06-20T13:03:50.912538+00:00",
+      "playbook": {
+        "routing_rules": [
+          {
+            "id": "44b562ae577a",
+            "entry_type": "routing_rule",
+            "content": {
+              "first_agent": "reproducer",
+              "second_agent": "patch_agent",
+              "patch_agent_start_condition": "reproducer_confirmed_failure",
+              "full_suite_condition": "target_test_passing",
+              "agent_order": [
+                "reproducer",
+                "patch_agent",
+                "verifier"
+              ]
+            },
+            "trajectory_id": "t1c_run2",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:06:01.418885+00:00",
+            "updated_at": "2026-06-20T13:06:01.418891+00:00",
+            "metadata": {}
+          }
+        ],
+        "prompt_patches": {
+          "reproducer": [
+            {
+              "id": "56ff8239374b",
+              "entry_type": "prompt_patch",
+              "content": "Publish your reproduction results (test failure confirmation with exact error message) to the evidence log before any other agent begins work.",
+              "trajectory_id": "t1c_run2",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:06:01.399006+00:00",
+              "updated_at": "2026-06-20T13:06:01.399034+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "3704eb929372",
+              "entry_type": "prompt_patch",
+              "content": "If you encounter sandbox or path errors, immediately report the blocking issue rather than silently failing.",
+              "trajectory_id": "t1c_run2",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:06:01.400663+00:00",
+              "updated_at": "2026-06-20T13:06:01.400680+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "e292b81c1446",
+              "entry_type": "prompt_patch",
+              "content": "Confirm the target test fails with a clear 'FAILURE CONFIRMED' message that other agents can wait for.",
+              "trajectory_id": "t1c_run2",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:06:01.410414+00:00",
+              "updated_at": "2026-06-20T13:06:01.410445+00:00",
+              "metadata": {}
+            }
+          ],
+          "patch_agent": [
+            {
+              "id": "1e3e9df579f9",
+              "entry_type": "prompt_patch",
+              "content": "Do not begin writing patches until you see explicit 'FAILURE CONFIRMED' evidence from the reproducer agent.",
+              "trajectory_id": "t1c_run2",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:06:01.411787+00:00",
+              "updated_at": "2026-06-20T13:06:01.411797+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "260871347d37",
+              "entry_type": "prompt_patch",
+              "content": "After reading a file, summarize the bug location and your fix plan in the evidence log so verifier can reference it.",
+              "trajectory_id": "t1c_run2",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:06:01.412946+00:00",
+              "updated_at": "2026-06-20T13:06:01.412961+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "69d03b7945df",
+              "entry_type": "prompt_patch",
+              "content": "If the bug fix is trivial (e.g., returning wrong variable), state the one-line fix clearly before applying it.",
+              "trajectory_id": "t1c_run2",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:06:01.414101+00:00",
+              "updated_at": "2026-06-20T13:06:01.414109+00:00",
+              "metadata": {}
+            }
+          ],
+          "verifier": [
+            {
+              "id": "526e95e784fb",
+              "entry_type": "prompt_patch",
+              "content": "Run only the specific target test first to confirm the patch fixes the reported bug before running the full test suite.",
+              "trajectory_id": "t1c_run2",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:06:01.415251+00:00",
+              "updated_at": "2026-06-20T13:06:01.415259+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "6e4079ce10b2",
+              "entry_type": "prompt_patch",
+              "content": "Check the evidence log for reproducer's failure confirmation and patch agent's fix summary before starting verification.",
+              "trajectory_id": "t1c_run2",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:06:01.416554+00:00",
+              "updated_at": "2026-06-20T13:06:01.416577+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "e65c5c377f47",
+              "entry_type": "prompt_patch",
+              "content": "If target test status is unknown or never confirmed failing, flag this as a process error rather than proceeding with full suite.",
+              "trajectory_id": "t1c_run2",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:06:01.417722+00:00",
+              "updated_at": "2026-06-20T13:06:01.417728+00:00",
+              "metadata": {}
+            }
+          ]
+        },
+        "waste_patterns": [
+          {
+            "id": "4f9597c536f3",
+            "entry_type": "waste_pattern",
+            "content": "File '/home/jack/Sync/New Documents/Projects/hackathons/agent_roi/demo/humaneval/var_gcd/solution.py' read by 3 different agents (reproducer, patch_agent, verifier) \u2014 potential duplicated investigation.",
+            "trajectory_id": "t1c_run2",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:06:01.420238+00:00",
+            "updated_at": "2026-06-20T13:06:01.420253+00:00",
+            "metadata": {
+              "waste_type": "duplicate_file_read",
+              "severity": "high"
+            }
+          },
+          {
+            "id": "98ac6d534797",
+            "entry_type": "waste_pattern",
+            "content": "File '/home/jack/Sync/New Documents/Projects/hackathons/agent_roi/demo/humaneval/var_gcd/tests/test_solution.py' read by 2 different agents (reproducer, verifier) \u2014 potential duplicated investigation.",
+            "trajectory_id": "t1c_run2",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:06:01.421747+00:00",
+            "updated_at": "2026-06-20T13:06:01.421769+00:00",
+            "metadata": {
+              "waste_type": "duplicate_file_read",
+              "severity": "medium"
+            }
+          },
+          {
+            "id": "3c5cc81e9fc8",
+            "entry_type": "waste_pattern",
+            "content": "Full test suite run at T=77.0s by 'verifier' before target test confirmed passing (never).",
+            "trajectory_id": "t1c_run2",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:06:01.423443+00:00",
+            "updated_at": "2026-06-20T13:06:01.423458+00:00",
+            "metadata": {
+              "waste_type": "premature_full_suite",
+              "severity": "high"
+            }
+          },
+          {
+            "id": "ce47f5a5913a",
+            "entry_type": "waste_pattern",
+            "content": "Patch agent started at T=0.0s before reproducer confirmed failure (never confirmed).",
+            "trajectory_id": "t1c_run2",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:06:01.425012+00:00",
+            "updated_at": "2026-06-20T13:06:01.425026+00:00",
+            "metadata": {
+              "waste_type": "bad_routing",
+              "severity": "high"
+            }
+          }
+        ],
+        "high_roi_context": [
+          {
+            "id": "9951ea84c19a",
+            "entry_type": "high_roi_context",
+            "content": "Judge insight: The swarm failed its primary objective despite a trivial bug fix, with severe coordination failures including parallel agent starts, zero evidence publishing, and 7 blocked actions indicating sandbox/path confusion.",
+            "trajectory_id": "t1c_run2",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:06:01.426330+00:00",
+            "updated_at": "2026-06-20T13:06:01.426336+00:00",
+            "metadata": {}
+          }
+        ],
+        "episodic": [
+          {
+            "id": "9999a04e4919",
+            "entry_type": "episodic_record",
+            "content": {
+              "run_id": "t1c_run2_pytest_assertione_run001_5d22ff",
+              "roi_score": 0.309,
+              "wall_time_sec": 99.682,
+              "tokens": 3569,
+              "target_pass": false,
+              "retrospective_snippet": "# Retrospective: GCD Bug Fix Run\n\n## What Went Well\n- The patch itself was correct (2-line diff, minimal change)\n- Full test suite passed, indicating no regressions introduced\n- Total token usage was reasonable (3,569 tokens)\n\n## Key Waste Patterns and Their Impact\n\n**1. Catastrophic Parallel Start "
+            },
+            "trajectory_id": "t1c_run2",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:06:01.427627+00:00",
+            "updated_at": "2026-06-20T13:06:01.427633+00:00",
+            "metadata": {}
+          }
+        ]
+      }
+    },
+    "t1c_run3": {
+      "description": "",
+      "created_at": "2026-06-20T13:06:06.014907+00:00",
+      "playbook": {
+        "routing_rules": [
+          {
+            "id": "dd4142497027",
+            "entry_type": "routing_rule",
+            "content": {
+              "first_agent": "reproducer",
+              "second_agent": "localizer",
+              "patch_agent_start_condition": "reproducer_confirmed_failure AND localizer_identified_target",
+              "full_suite_condition": "target_test_passing",
+              "agent_order": [
+                "reproducer",
+                "localizer",
+                "patch_agent",
+                "verifier"
+              ]
+            },
+            "trajectory_id": "t1c_run3",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:07:48.558068+00:00",
+            "updated_at": "2026-06-20T13:07:48.558084+00:00",
+            "metadata": {}
+          }
+        ],
+        "prompt_patches": {
+          "reproducer": [
+            {
+              "id": "5e50f680880d",
+              "entry_type": "prompt_patch",
+              "content": "You MUST explicitly confirm test failure by running the target test and reporting the exact failure output before any other agent proceeds.",
+              "trajectory_id": "t1c_run3",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:07:48.534234+00:00",
+              "updated_at": "2026-06-20T13:07:48.534266+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "03053aed0f96",
+              "entry_type": "prompt_patch",
+              "content": "Signal completion status clearly with FAILURE_CONFIRMED or UNABLE_TO_REPRODUCE so downstream agents know whether to proceed.",
+              "trajectory_id": "t1c_run3",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:07:48.536625+00:00",
+              "updated_at": "2026-06-20T13:07:48.536647+00:00",
+              "metadata": {}
+            }
+          ],
+          "patch_agent": [
+            {
+              "id": "1e4d6d6098ed",
+              "entry_type": "prompt_patch",
+              "content": "Do NOT begin patching until the reproducer has explicitly confirmed the bug with a failing test output.",
+              "trajectory_id": "t1c_run3",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:07:48.546933+00:00",
+              "updated_at": "2026-06-20T13:07:48.546961+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "a50dd10615ab",
+              "entry_type": "prompt_patch",
+              "content": "For GCD algorithms, verify the return statement returns the variable that holds the result when the loop terminates (typically 'a' when 'b' becomes 0 in Euclidean algorithm).",
+              "trajectory_id": "t1c_run3",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:07:48.549086+00:00",
+              "updated_at": "2026-06-20T13:07:48.549105+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "6542b0ae7923",
+              "entry_type": "prompt_patch",
+              "content": "After creating a patch, run the specific target test yourself to confirm the fix before declaring completion.",
+              "trajectory_id": "t1c_run3",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:07:48.550872+00:00",
+              "updated_at": "2026-06-20T13:07:48.550890+00:00",
+              "metadata": {}
+            }
+          ],
+          "verifier": [
+            {
+              "id": "a6aca22e23a5",
+              "entry_type": "prompt_patch",
+              "content": "Run ONLY the target test first and confirm it passes before running the full test suite.",
+              "trajectory_id": "t1c_run3",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:07:48.552659+00:00",
+              "updated_at": "2026-06-20T13:07:48.552667+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "0d5cd4055434",
+              "entry_type": "prompt_patch",
+              "content": "If the target test never passes, report the run as FAILED regardless of full suite results\u2014do not let passing unrelated tests mask the actual failure.",
+              "trajectory_id": "t1c_run3",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:07:48.554371+00:00",
+              "updated_at": "2026-06-20T13:07:48.554380+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "91a231d96d6d",
+              "entry_type": "prompt_patch",
+              "content": "Explicitly check that the specific bug described in the task (e.g., wrong return variable) has been corrected in the patched code.",
+              "trajectory_id": "t1c_run3",
+              "task_signature_key": "pytest|assertionerror|var_gcd",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T13:07:48.556186+00:00",
+              "updated_at": "2026-06-20T13:07:48.556194+00:00",
+              "metadata": {}
+            }
+          ]
+        },
+        "waste_patterns": [
+          {
+            "id": "b1f21cca93d2",
+            "entry_type": "waste_pattern",
+            "content": "File '/home/jack/Sync/New Documents/Projects/hackathons/agent_roi/demo/humaneval/var_gcd/solution.py' read by 2 different agents (patch_agent, verifier) \u2014 potential duplicated investigation.",
+            "trajectory_id": "t1c_run3",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:07:48.559924+00:00",
+            "updated_at": "2026-06-20T13:07:48.559939+00:00",
+            "metadata": {
+              "waste_type": "duplicate_file_read",
+              "severity": "medium"
+            }
+          },
+          {
+            "id": "82bf4e985b4f",
+            "entry_type": "waste_pattern",
+            "content": "Full test suite run at T=43.4s by 'verifier' before target test confirmed passing (never).",
+            "trajectory_id": "t1c_run3",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:07:48.561778+00:00",
+            "updated_at": "2026-06-20T13:07:48.561786+00:00",
+            "metadata": {
+              "waste_type": "premature_full_suite",
+              "severity": "high"
+            }
+          },
+          {
+            "id": "1903ce35c6a8",
+            "entry_type": "waste_pattern",
+            "content": "Patch agent started at T=0.0s before reproducer confirmed failure (never confirmed).",
+            "trajectory_id": "t1c_run3",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:07:48.564141+00:00",
+            "updated_at": "2026-06-20T13:07:48.564163+00:00",
+            "metadata": {
+              "waste_type": "bad_routing",
+              "severity": "high"
+            }
+          }
+        ],
+        "high_roi_context": [
+          {
+            "id": "f02ae629c820",
+            "entry_type": "high_roi_context",
+            "content": "Judge insight: The swarm failed completely despite full suite passing\u2014target test never passed, indicating the actual bug was not fixed and the run was a false positive.",
+            "trajectory_id": "t1c_run3",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:07:48.566603+00:00",
+            "updated_at": "2026-06-20T13:07:48.566621+00:00",
+            "metadata": {}
+          }
+        ],
+        "episodic": [
+          {
+            "id": "919d47e0dd3b",
+            "entry_type": "episodic_record",
+            "content": {
+              "run_id": "t1c_run3_pytest_assertione_run001_7fceb3",
+              "roi_score": 0.334,
+              "wall_time_sec": 72.056,
+              "tokens": 3168,
+              "target_pass": false,
+              "retrospective_snippet": "# Retrospective: GCD Bug Fix Run\n\n## What Went Well\n- Wall time (72s) and token usage (3168) were relatively modest\n- Agents successfully located and read the target file\n- Full test suite eventually passed\n\n## Key Waste Patterns and Their Impact\n\n**1. False Positive Result (CRITICAL)**\nThe run repo"
+            },
+            "trajectory_id": "t1c_run3",
+            "task_signature_key": "pytest|assertionerror|var_gcd",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T13:07:48.568916+00:00",
+            "updated_at": "2026-06-20T13:07:48.568933+00:00",
+            "metadata": {}
+          }
+        ]
+      }
+    }
+  },
+  "global_playbook": {
+    "waste_patterns": [
+      {
+        "id": "a46cb915e501",
+        "entry_type": "waste_pattern",
+        "content": "File '/home/jack/Sync/New Documents/Projects/hackathons/agent_roi/demo/humaneval/var_gcd/solution.py' read by 3 different agents (log_investigator, patch_agent, verifier) \u2014 potential duplicated investigation.",
+        "trajectory_id": "t1c_run1",
+        "task_signature_key": "pytest|assertionerror|var_gcd",
+        "agent_role": "",
+        "helpful_count": 0,
+        "harmful_count": 0,
+        "created_at": "2026-06-20T13:03:46.274779+00:00",
+        "updated_at": "2026-06-20T13:03:46.274796+00:00",
+        "metadata": {
+          "waste_type": "duplicate_file_read",
+          "severity": "high"
+        }
+      },
+      {
+        "id": "9a678124b1c1",
+        "entry_type": "waste_pattern",
+        "content": "Full test suite run at T=55.4s by 'reproducer' before target test confirmed passing (never).",
+        "trajectory_id": "t1c_run1",
+        "task_signature_key": "pytest|assertionerror|var_gcd",
+        "agent_role": "",
+        "helpful_count": 0,
+        "harmful_count": 0,
+        "created_at": "2026-06-20T13:03:46.275521+00:00",
+        "updated_at": "2026-06-20T13:03:46.275533+00:00",
+        "metadata": {
+          "waste_type": "premature_full_suite",
+          "severity": "high"
+        }
+      },
+      {
+        "id": "8cfd6a257c39",
+        "entry_type": "waste_pattern",
+        "content": "Full test suite run at T=128.3s by 'verifier' before target test confirmed passing (never).",
+        "trajectory_id": "t1c_run1",
+        "task_signature_key": "pytest|assertionerror|var_gcd",
+        "agent_role": "",
+        "helpful_count": 0,
+        "harmful_count": 0,
+        "created_at": "2026-06-20T13:03:46.276363+00:00",
+        "updated_at": "2026-06-20T13:03:46.276375+00:00",
+        "metadata": {
+          "waste_type": "premature_full_suite",
+          "severity": "high"
+        }
+      },
+      {
+        "id": "03dfb738fd97",
+        "entry_type": "waste_pattern",
+        "content": "Patch agent started at T=63.4s before reproducer confirmed failure (never confirmed).",
+        "trajectory_id": "t1c_run1",
+        "task_signature_key": "pytest|assertionerror|var_gcd",
+        "agent_role": "",
+        "helpful_count": 0,
+        "harmful_count": 0,
+        "created_at": "2026-06-20T13:03:46.277266+00:00",
+        "updated_at": "2026-06-20T13:03:46.277282+00:00",
+        "metadata": {
+          "waste_type": "bad_routing",
+          "severity": "high"
+        }
+      },
+      {
+        "id": "98ac6d534797",
+        "entry_type": "waste_pattern",
+        "content": "File '/home/jack/Sync/New Documents/Projects/hackathons/agent_roi/demo/humaneval/var_gcd/tests/test_solution.py' read by 2 different agents (reproducer, verifier) \u2014 potential duplicated investigation.",
+        "trajectory_id": "t1c_run2",
+        "task_signature_key": "pytest|assertionerror|var_gcd",
+        "agent_role": "",
+        "helpful_count": 0,
+        "harmful_count": 0,
+        "created_at": "2026-06-20T13:06:01.421747+00:00",
+        "updated_at": "2026-06-20T13:06:01.421769+00:00",
+        "metadata": {
+          "waste_type": "duplicate_file_read",
+          "severity": "medium"
+        }
+      }
+    ],
+    "high_roi_context": [
+      {
+        "id": "49c8e24bf45b",
+        "entry_type": "high_roi_context",
+        "content": "Judge insight: The swarm failed completely despite a trivially simple bug (return b instead of return a), with agents unable to apply patches due to 9 blocked actions and zero evidence published between agents.",
+        "trajectory_id": "t1c_run1",
+        "task_signature_key": "pytest|assertionerror|var_gcd",
+        "agent_role": "",
+        "helpful_count": 0,
+        "harmful_count": 0,
+        "created_at": "2026-06-20T13:03:46.278258+00:00",
+        "updated_at": "2026-06-20T13:03:46.278273+00:00",
+        "metadata": {}
+      },
+      {
+        "id": "9951ea84c19a",
+        "entry_type": "high_roi_context",
+        "content": "Judge insight: The swarm failed its primary objective despite a trivial bug fix, with severe coordination failures including parallel agent starts, zero evidence publishing, and 7 blocked actions indicating sandbox/path confusion.",
+        "trajectory_id": "t1c_run2",
+        "task_signature_key": "pytest|assertionerror|var_gcd",
+        "agent_role": "",
+        "helpful_count": 0,
+        "harmful_count": 0,
+        "created_at": "2026-06-20T13:06:01.426330+00:00",
+        "updated_at": "2026-06-20T13:06:01.426336+00:00",
+        "metadata": {}
+      },
+      {
+        "id": "f02ae629c820",
+        "entry_type": "high_roi_context",
+        "content": "Judge insight: The swarm failed completely despite full suite passing\u2014target test never passed, indicating the actual bug was not fixed and the run was a false positive.",
+        "trajectory_id": "t1c_run3",
+        "task_signature_key": "pytest|assertionerror|var_gcd",
+        "agent_role": "",
+        "helpful_count": 0,
+        "harmful_count": 0,
+        "created_at": "2026-06-20T13:07:48.566603+00:00",
+        "updated_at": "2026-06-20T13:07:48.566621+00:00",
+        "metadata": {}
+      }
+    ]
+  }
+}

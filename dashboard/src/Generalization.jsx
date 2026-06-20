@@ -32,26 +32,29 @@ function NoData({ label }) {
 
 // ── Tier 1: learning curves per problem ────────────────────────────
 function Tier1Chart({ runs }) {
-  // Group by service, then by trajectory prefix (t1a/t1b/t1c)
-  // Each chain: run1 → run2 → run3 for the same problem
+  // Group by chain prefix (t1a/t1b/t1c) — each is a distinct problem repeated 3×
   const chains = {}
+  const chainLabel = {}
   for (const r of runs) {
-    if (!r.trajectory?.startsWith('t1')) continue
-    const svc = r.service
-    if (!chains[svc]) chains[svc] = []
-    chains[svc].push(r)
+    const m = r.trajectory?.match(/^(t1[abc])/)
+    if (!m) continue
+    const chain = m[1]
+    if (!chains[chain]) { chains[chain] = []; chainLabel[chain] = r.service }
+    chains[chain].push(r)
   }
 
-  const CHAIN_COLORS = ['#7c6af7', '#4ade80', '#facc15']
-  const svcs = Object.keys(chains)
+  const CHAIN_COLORS = { t1a: '#7c6af7', t1b: '#4ade80', t1c: '#facc15' }
+  const chainKeys = Object.keys(chains).sort()
 
-  if (!svcs.length) return <NoData label="Tier 1" />
+  if (!chainKeys.length) return <NoData label="Tier 1" />
 
-  // Build one line per service: x = run index (1,2,3)
-  const maxRuns = Math.max(...svcs.map(s => chains[s].length))
+  const maxRuns = Math.max(...chainKeys.map(c => chains[c].length))
   const data = Array.from({ length: maxRuns }, (_, i) => {
     const pt = { run: `Run ${i + 1}` }
-    for (const svc of svcs) pt[svc] = chains[svc][i]?.roi ?? null
+    for (const c of chainKeys) {
+      const sorted = chains[c].slice().sort((a, b) => a.trajectory.localeCompare(b.trajectory))
+      pt[c] = sorted[i]?.roi ?? null
+    }
     return pt
   })
 
@@ -62,10 +65,11 @@ function Tier1Chart({ runs }) {
         <XAxis dataKey="run" tick={axisStyle} />
         <YAxis domain={[0, 1]} tick={axisStyle} tickFormatter={v => v.toFixed(2)} />
         <Tooltip contentStyle={{ background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: 8 }}
-          formatter={(v, name) => [v?.toFixed(3) ?? '—', name]} />
-        <Legend wrapperStyle={{ fontSize: 11 }} />
-        {svcs.map((svc, i) => (
-          <Line key={svc} type="monotone" dataKey={svc} stroke={CHAIN_COLORS[i % CHAIN_COLORS.length]}
+          formatter={(v, name) => [v?.toFixed(3) ?? '—', chainLabel[name] ?? name]} />
+        <Legend wrapperStyle={{ fontSize: 11 }} formatter={name => chainLabel[name] ?? name} />
+        {chainKeys.map(c => (
+          <Line key={c} type="monotone" dataKey={c} name={c}
+            stroke={CHAIN_COLORS[c] ?? '#aaa'}
             strokeWidth={2} dot={{ r: 4 }} connectNulls />
         ))}
       </LineChart>
@@ -190,18 +194,17 @@ function TierStat({ label, value, sub, color }) {
 export default function Generalization() {
   const [data, setData] = useState(null)
   const [metric, setMetric] = useState('roi')
+  const [lastUpdated, setLastUpdated] = useState(null)
+  const [live, setLive] = useState(false)
 
   useEffect(() => {
-    fetch('/summary_humaneval.json')
-      .then(r => r.ok ? r.json() : null)
-      .catch(() => null)
-      .then(setData)
-    const iv = setInterval(() => {
+    const load = () =>
       fetch('/summary_humaneval.json')
         .then(r => r.ok ? r.json() : null)
         .catch(() => null)
-        .then(setData)
-    }, 15000)
+        .then(d => { if (d) { setData(d); setLastUpdated(new Date()); setLive(true) } })
+    load()
+    const iv = setInterval(load, 15000)
     return () => clearInterval(iv)
   }, [])
 
@@ -210,26 +213,33 @@ export default function Generalization() {
   const t2runs = runs.filter(r => r.trajectory?.startsWith('t2'))
   const t3runs = runs.filter(r => r.trajectory?.startsWith('t3'))
 
-  // Aggregate improvement per tier
-  const avgDelta = (tierRuns) => {
-    const byService = {}
+  // T1 groups by chain prefix (t1a/t1b/t1c), T2/T3 group by service+trajectory
+  const avgDeltaByChain = (tierRuns, chainPrefixFn) => {
+    const chains = {}
     for (const r of tierRuns) {
-      if (!byService[r.service]) byService[r.service] = []
-      byService[r.service].push(r)
+      const key = chainPrefixFn(r)
+      if (!chains[key]) chains[key] = []
+      chains[key].push(r)
     }
-    const deltas = Object.values(byService)
+    const deltas = Object.values(chains)
       .filter(arr => arr.length >= 2)
       .map(arr => {
         const sorted = arr.slice().sort((a,b) => a.trajectory.localeCompare(b.trajectory))
-        return sorted[sorted.length-1].roi - sorted[0].roi
+        return { roi: sorted[sorted.length-1].roi - sorted[0].roi,
+                 tok: sorted[sorted.length-1].tokens - sorted[0].tokens }
       })
     if (!deltas.length) return null
-    return (deltas.reduce((a,b) => a+b, 0) / deltas.length)
+    return {
+      roi: deltas.reduce((a,b) => a + b.roi, 0) / deltas.length,
+      tok: deltas.reduce((a,b) => a + b.tok, 0) / deltas.length,
+    }
   }
 
-  const t1delta = avgDelta(t1runs)
-  const t2delta = avgDelta(t2runs)
-  const t3delta = avgDelta(t3runs)
+  // T1: group by chain letter (t1a/t1b/t1c)
+  const t1delta = avgDeltaByChain(t1runs, r => r.trajectory?.match(/^(t1[abc])/)?.[1] ?? r.trajectory)
+  // T2/T3: group by service (sequential bugs)
+  const t2delta = avgDeltaByChain(t2runs, r => r.service)
+  const t3delta = avgDeltaByChain(t3runs, r => r.service)
 
   const METRICS = [
     { key: 'roi', label: 'ROI Score' },
@@ -239,19 +249,36 @@ export default function Generalization() {
 
   return (
     <div>
+      {/* Live indicator + last updated */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11,
+          color: live ? '#4ade80' : 'var(--text-dim)' }}>
+          <span style={{ width: 7, height: 7, borderRadius: '50%',
+            background: live ? '#4ade80' : '#555', display: 'inline-block',
+            boxShadow: live ? '0 0 6px #4ade80' : 'none' }} />
+          {live ? 'Live — auto-refreshes every 15s' : 'Waiting for data…'}
+        </span>
+        {lastUpdated && <span style={{ fontSize: 11, color: 'var(--text-dim)' }}>
+          Last updated: {lastUpdated.toLocaleTimeString()}
+        </span>}
+        <span style={{ fontSize: 11, color: 'var(--text-dim)', marginLeft: 'auto' }}>
+          {t1runs.length} T1 · {t2runs.length} T2 · {t3runs.length} T3 runs complete
+        </span>
+      </div>
+
       {/* Tier stat strip */}
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 24 }}>
-        <TierStat label="Tier 1 avg Δ ROI" color="#7c6af7"
-          value={t1delta != null ? (t1delta >= 0 ? '+' : '') + t1delta.toFixed(3) : '—'}
-          sub="same-bug repeat" />
-        <TierStat label="Tier 2 avg Δ ROI" color="#4ade80"
-          value={t2delta != null ? (t2delta >= 0 ? '+' : '') + t2delta.toFixed(3) : '—'}
-          sub="same-domain transfer" />
-        <TierStat label="Tier 3 avg Δ ROI" color="#facc15"
-          value={t3delta != null ? (t3delta >= 0 ? '+' : '') + t3delta.toFixed(3) : '—'}
-          sub="cross-domain transfer" />
+        <TierStat label="T1 avg Δ ROI" color="#7c6af7"
+          value={t1delta ? (t1delta.roi >= 0 ? '+' : '') + t1delta.roi.toFixed(3) : '—'}
+          sub={t1delta ? `tokens ${t1delta.tok > 0 ? '+' : ''}${Math.round(t1delta.tok)}` : 'same-bug repeat'} />
+        <TierStat label="T2 avg Δ ROI" color="#4ade80"
+          value={t2delta ? (t2delta.roi >= 0 ? '+' : '') + t2delta.roi.toFixed(3) : '—'}
+          sub={t2delta ? `tokens ${t2delta.tok > 0 ? '+' : ''}${Math.round(t2delta.tok)}` : 'same-domain'} />
+        <TierStat label="T3 avg Δ ROI" color="#facc15"
+          value={t3delta ? (t3delta.roi >= 0 ? '+' : '') + t3delta.roi.toFixed(3) : '—'}
+          sub={t3delta ? `tokens ${t3delta.tok > 0 ? '+' : ''}${Math.round(t3delta.tok)}` : 'cross-domain'} />
         <TierStat label="Total runs" color="var(--text-h)"
-          value={runs.length} sub={`${t1runs.length} / ${t2runs.length} / ${t3runs.length} per tier`} />
+          value={runs.length} sub={`of ~19 expected`} />
       </div>
 
       {/* Metric selector */}
