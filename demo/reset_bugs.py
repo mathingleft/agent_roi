@@ -61,8 +61,10 @@ FIXES = {
 }
 
 
-def apply(mapping: dict, label: str):
+def apply(mapping: dict, label: str, only: str | None = None):
     for repo, info in mapping.items():
+        if only and repo != only:
+            continue
         path = info["file"]
         content = path.read_text()
         if info["find"] in content:
@@ -76,10 +78,20 @@ def apply(mapping: dict, label: str):
 
 if __name__ == "__main__":
     import sys
-    mode = sys.argv[1] if len(sys.argv) > 1 else "bug"
+    args = sys.argv[1:]
+    mode = "bug"
+    only = None
+    i = 0
+    while i < len(args):
+        if args[i] in ("bug", "fix"):
+            mode = args[i]
+        elif args[i] == "--only" and i + 1 < len(args):
+            only = args[i + 1]
+            i += 1
+        i += 1
     if mode == "fix":
         print("Applying fixes...")
-        apply(FIXES, "fix")
+        apply(FIXES, "fix", only)
     else:
         print("Restoring bugs...")
-        apply(BUGS, "bug")
+        apply(BUGS, "bug", only)

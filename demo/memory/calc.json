@@ -159,11 +159,185 @@
       "description": "",
       "created_at": "2026-06-20T12:00:52.561727+00:00",
       "playbook": {
-        "routing_rules": [],
-        "prompt_patches": {},
-        "waste_patterns": [],
-        "high_roi_context": [],
-        "episodic": []
+        "routing_rules": [
+          {
+            "id": "c22b2738fb4a",
+            "entry_type": "routing_rule",
+            "content": {
+              "patch_agent_start_condition": "after reproducer confirms test failure",
+              "agent_order": [
+                "reproducer",
+                "patch_agent",
+                "verifier"
+              ]
+            },
+            "trajectory_id": "calc_run2",
+            "task_signature_key": "pytest|assertionerror|calc",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T12:02:48.840504+00:00",
+            "updated_at": "2026-06-20T12:02:48.840515+00:00",
+            "metadata": {}
+          }
+        ],
+        "prompt_patches": {
+          "patch_agent": [
+            {
+              "id": "9ded491dc69f",
+              "entry_type": "prompt_patch",
+              "content": "Do NOT begin writing or planning any patch until the reproducer agent has explicitly confirmed the failure exists.",
+              "trajectory_id": "calc_run2",
+              "task_signature_key": "pytest|assertionerror|calc",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T12:02:48.826799+00:00",
+              "updated_at": "2026-06-20T12:02:48.826824+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "7efbabd436d1",
+              "entry_type": "prompt_patch",
+              "content": "Wait for a signal or confirmation message from the reproducer before taking any action on the codebase.",
+              "trajectory_id": "calc_run2",
+              "task_signature_key": "pytest|assertionerror|calc",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T12:02:48.827935+00:00",
+              "updated_at": "2026-06-20T12:02:48.827956+00:00",
+              "metadata": {}
+            }
+          ],
+          "verifier": [
+            {
+              "id": "aaf10c3492fc",
+              "entry_type": "prompt_patch",
+              "content": "Before reading any source files, check if another agent has already read and summarized the relevant file contents to avoid duplicate investigation.",
+              "trajectory_id": "calc_run2",
+              "task_signature_key": "pytest|assertionerror|calc",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T12:02:48.837282+00:00",
+              "updated_at": "2026-06-20T12:02:48.837315+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "bf0364739f19",
+              "entry_type": "prompt_patch",
+              "content": "Request file contents from previous agent outputs when available instead of re-reading files independently.",
+              "trajectory_id": "calc_run2",
+              "task_signature_key": "pytest|assertionerror|calc",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T12:02:48.838167+00:00",
+              "updated_at": "2026-06-20T12:02:48.838182+00:00",
+              "metadata": {}
+            }
+          ],
+          "reproducer": [
+            {
+              "id": "67ad2f1a8ece",
+              "entry_type": "prompt_patch",
+              "content": "Immediately signal other agents when failure reproduction is complete or if reproduction fails, so downstream agents know whether to proceed.",
+              "trajectory_id": "calc_run2",
+              "task_signature_key": "pytest|assertionerror|calc",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T12:02:48.838934+00:00",
+              "updated_at": "2026-06-20T12:02:48.838950+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "3439abf16351",
+              "entry_type": "prompt_patch",
+              "content": "Prioritize fast failure confirmation and broadcast the result before any detailed analysis.",
+              "trajectory_id": "calc_run2",
+              "task_signature_key": "pytest|assertionerror|calc",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T12:02:48.839669+00:00",
+              "updated_at": "2026-06-20T12:02:48.839692+00:00",
+              "metadata": {}
+            }
+          ]
+        },
+        "waste_patterns": [
+          {
+            "id": "a5c40d857ebb",
+            "entry_type": "waste_pattern",
+            "content": "File '/home/jack/Sync/New Documents/Projects/hackathons/agent_roi/demo/repos/calc/calc.py' read by 2 different agents (patch_agent, verifier) \u2014 potential duplicated investigation.",
+            "trajectory_id": "calc_run2",
+            "task_signature_key": "pytest|assertionerror|calc",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T12:02:48.841262+00:00",
+            "updated_at": "2026-06-20T12:02:48.841279+00:00",
+            "metadata": {
+              "waste_type": "duplicate_file_read",
+              "severity": "medium"
+            }
+          },
+          {
+            "id": "a984f7159229",
+            "entry_type": "waste_pattern",
+            "content": "Patch agent started at T=0.0s before reproducer confirmed failure (never confirmed).",
+            "trajectory_id": "calc_run2",
+            "task_signature_key": "pytest|assertionerror|calc",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T12:02:48.842092+00:00",
+            "updated_at": "2026-06-20T12:02:48.842104+00:00",
+            "metadata": {
+              "waste_type": "bad_routing",
+              "severity": "high"
+            }
+          }
+        ],
+        "high_roi_context": [
+          {
+            "id": "470eafbc6a13",
+            "entry_type": "high_roi_context",
+            "content": "Judge insight: The swarm completely failed its mission\u2014no patch was produced, all agents hit blocked actions, and the patch agent started before the reproducer even confirmed the failure.",
+            "trajectory_id": "calc_run2",
+            "task_signature_key": "pytest|assertionerror|calc",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T12:02:48.842942+00:00",
+            "updated_at": "2026-06-20T12:02:48.842951+00:00",
+            "metadata": {}
+          }
+        ],
+        "episodic": [
+          {
+            "id": "60e51939d332",
+            "entry_type": "episodic_record",
+            "content": {
+              "run_id": "calc_run_pytest_assertione_run001_164308",
+              "roi_score": 0.03,
+              "wall_time_sec": 90.18,
+              "tokens": 2204,
+              "target_pass": false,
+              "retrospective_snippet": "# Retrospective: calc/divide Float Fix\n\n## Run Summary\n**Task**: Change `a // b` to `a / b` in calc.py  \n**Result**: Complete failure (ROI: 0.03/1.0) \u2014 no patch produced, bug unfixed\n\n---\n\n## 1. What Went Well\n\nHonestly, very little. The swarm detected the target file and made read attempts. That's "
+            },
+            "trajectory_id": "calc_run2",
+            "task_signature_key": "pytest|assertionerror|calc",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T12:02:48.843786+00:00",
+            "updated_at": "2026-06-20T12:02:48.843796+00:00",
+            "metadata": {}
+          }
+        ]
       }
     }
   },
@@ -184,6 +358,22 @@
           "waste_type": "bad_routing",
           "severity": "high"
         }
+      },
+      {
+        "id": "a5c40d857ebb",
+        "entry_type": "waste_pattern",
+        "content": "File '/home/jack/Sync/New Documents/Projects/hackathons/agent_roi/demo/repos/calc/calc.py' read by 2 different agents (patch_agent, verifier) \u2014 potential duplicated investigation.",
+        "trajectory_id": "calc_run2",
+        "task_signature_key": "pytest|assertionerror|calc",
+        "agent_role": "",
+        "helpful_count": 0,
+        "harmful_count": 0,
+        "created_at": "2026-06-20T12:02:48.841262+00:00",
+        "updated_at": "2026-06-20T12:02:48.841279+00:00",
+        "metadata": {
+          "waste_type": "duplicate_file_read",
+          "severity": "medium"
+        }
       }
     ],
     "high_roi_context": [
@@ -198,6 +388,19 @@
         "harmful_count": 0,
         "created_at": "2026-06-20T12:00:48.140738+00:00",
         "updated_at": "2026-06-20T12:00:48.140758+00:00",
+        "metadata": {}
+      },
+      {
+        "id": "470eafbc6a13",
+        "entry_type": "high_roi_context",
+        "content": "Judge insight: The swarm completely failed its mission\u2014no patch was produced, all agents hit blocked actions, and the patch agent started before the reproducer even confirmed the failure.",
+        "trajectory_id": "calc_run2",
+        "task_signature_key": "pytest|assertionerror|calc",
+        "agent_role": "",
+        "helpful_count": 0,
+        "harmful_count": 0,
+        "created_at": "2026-06-20T12:02:48.842942+00:00",
+        "updated_at": "2026-06-20T12:02:48.842951+00:00",
         "metadata": {}
       }
     ]
