@@ -9,17 +9,17 @@
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 ╭────────────────────────────── AgentROI Result ───────────────────────────────╮
-│ Composite ROI: 0.030    run_id=t3_var_r_pytest_assertione_run001_7accc3      │
+│ Composite ROI: 0.030    run_id=t3_var_r_pytest_assertione_run015_d3d14c      │
 │ trajectory=t3_var_roll_run2                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
                                
   Metric                Value  
  ───────────────────────────── 
-  Wall time            114.4s  
-  Tokens (est)           3044  
-  File reads                2  
-  Duplicate reads           1  
-  Test runs                 4  
+  Wall time            102.8s  
+  Tokens (est)           2591  
+  File reads                3  
+  Duplicate reads           2  
+  Test runs                 2  
   Evidence published        0  
   Target test passed        ✗  
   Full suite passed         ✗  
@@ -28,28 +28,30 @@
 Waste events detected (4):
   •  duplicate_file_read: File '/home/jack/Sync/New 
 Documents/Projects/hackathons/agent_roi/demo/humaneval/var_rolling_max/sol
-  •  premature_full_suite: Full test suite run at T=21.1s by 'patch_agent' 
+  •  premature_full_suite: Full test suite run at T=17.7s by 'patch_agent' 
 before target test confirmed passing (never).
-  •  premature_full_suite: Full test suite run at T=30.3s by 'patch_agent' 
+  •  premature_full_suite: Full test suite run at T=20.4s by 'patch_agent' 
 before target test confirmed passing (never).
   •  bad_routing: Patch agent started at T=0.0s before reproducer confirmed 
 failure (never confirmed).
 
-Judge insight: The swarm completely failed its mission with 10 blocked actions, 
-zero evidence published, and no patch produced despite a straightforward 
-single-line bug fix.
+Judge insight: The swarm completely failed its mission—patch_agent started 
+before reproducer confirmed the bug, produced no actual patch, and both 
+reproducer and verifier were blocked from writing files they needed, resulting 
+in zero progress on a simple one-line fix.
 
-Retrospective: # Retrospective: Rolling Max Bug Fix (ROI: 0.03)
+Retrospective: # Retrospective: rolling_max Bug Fix (ROI: 0.03)
 
 ## What Went Well
-- Agents correctly identified the target file (`solution.py`)
-- The bug was conceptually simple and well-understood from the task description
+- File reads were technically successful; all agents correctly identified 
+solution.py
+- The task was simple (one-line fix), demonstrating the swarm's inefficiency on 
+trivial problems
 
 ## Key Waste Patterns and Their Impact
 
-**1. Catastrophic Routing Failure (HIGH)**
-- `pat
+**1. Bad
 
 Report written → /home/jack/Sync/New 
 Documents/Projects/hackathons/agent_roi/demo/results_humaneval/t3_var_r_pytest_a
-ssertione_run001_7accc3_roi_report.json
+ssertione_run015_d3d14c_roi_report.json

@@ -9,17 +9,17 @@
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 ╭────────────────────────────── AgentROI Result ───────────────────────────────╮
-│ Composite ROI: 0.151    run_id=t3_var_r_pytest_assertione_run001_ec1cb8      │
+│ Composite ROI: 0.191    run_id=t3_var_r_pytest_assertione_run019_bf3ef3      │
 │ trajectory=t3_var_roll_run1                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
                                
   Metric                Value  
  ───────────────────────────── 
-  Wall time            181.6s  
-  Tokens (est)           6347  
-  File reads               10  
-  Duplicate reads           4  
-  Test runs                 2  
+  Wall time            125.7s  
+  Tokens (est)           4067  
+  File reads                5  
+  Duplicate reads           3  
+  Test runs                 3  
   Evidence published        0  
   Target test passed        ✗  
   Full suite passed         ✓  
@@ -28,28 +28,30 @@
 Waste events detected (5):
   •  duplicate_file_read: File '/home/jack/Sync/New 
 Documents/Projects/hackathons/agent_roi/demo/humaneval/var_rolling_max/sol
-  •  duplicate_file_read: File '/home/jack/Sync/New 
-Documents/Projects/hackathons/agent_roi/demo/humaneval/var_rolling_max/tes
-  •  premature_full_suite: Full test suite run at T=40.1s by 'reproducer' before
+  •  premature_full_suite: Full test suite run at T=7.6s by 'reproducer' before 
 target test confirmed passing (never).
-  •  premature_full_suite: Full test suite run at T=137.1s by 'verifier' before 
+  •  premature_full_suite: Full test suite run at T=48.6s by 'verifier' before 
 target test confirmed passing (never).
-  •  bad_routing: Patch agent started at T=59.6s before reproducer confirmed 
+  •  premature_full_suite: Full test suite run at T=76.8s by 'verifier' before 
+target test confirmed passing (never).
+  •  bad_routing: Patch agent started at T=21.1s before reproducer confirmed 
 failure (never confirmed).
 
-Judge insight: The swarm failed entirely due to pervasive blocked actions 
-preventing agents from reading or editing the target file, resulting in zero 
-progress despite 181 seconds of execution.
+Judge insight: The swarm completely failed its mission—despite a simple one-line
+fix required, no patch was applied and the target test never passed, with agents
+working in silos reading the same file 4 times without sharing findings.
 
-Retrospective: # Retrospective: rolling_max Bug Fix (ROI: 0.15)
+Retrospective: ## Retrospective: rolling_max Bug Fix (ROI: 0.19)
 
-## What Went Well
-- Test suite infrastructure worked correctly (2 test runs executed)
-- Agents attempted to follow the investigation workflow
-- Suite passed at end (though this was meaningless since no patch was applied)
+### What Went Well
+- Agents successfully identified the correct file and read the buggy code
+- The swarm completed without crashes or infinite loops
+- Wall time (125s) stayed within reasonable bounds
 
-## Key Waste Patterns and Th
+### Key Waste Patterns and Their Impact
+
+**1. Ze
 
 Report written → /home/jack/Sync/New 
 Documents/Projects/hackathons/agent_roi/demo/results_humaneval/t3_var_r_pytest_a
-ssertione_run001_ec1cb8_roi_report.json
+ssertione_run019_bf3ef3_roi_report.json

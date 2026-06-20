@@ -9,47 +9,51 @@
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 ╭────────────────────────────── AgentROI Result ───────────────────────────────╮
-│ Composite ROI: 0.030    run_id=t1a_run2_pytest_assertione_run001_b14922      │
+│ Composite ROI: 0.294    run_id=t1a_run2_pytest_assertione_run016_274986      │
 │ trajectory=t1a_run2                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
-                               
-  Metric                Value  
- ───────────────────────────── 
-  Wall time            154.0s  
-  Tokens (est)           3419  
-  File reads                5  
-  Duplicate reads           3  
-  Test runs                 1  
-  Evidence published        0  
-  Target test passed        ✗  
-  Full suite passed         ✗  
-  Test files edited     clean  
-                               
-Waste events detected (4):
+                              
+  Metric               Value  
+ ──────────────────────────── 
+  Wall time            75.7s  
+  Tokens (est)          2205  
+  File reads               2  
+  Duplicate reads          1  
+  Test runs                4  
+  Evidence published       0  
+  Target test passed       ✗  
+  Full suite passed        ✓  
+  Test files edited    clean  
+                              
+Waste events detected (6):
   •  duplicate_file_read: File '/home/jack/Sync/New 
 Documents/Projects/hackathons/agent_roi/demo/humaneval/op_get_positive/sol
-  •  duplicate_file_read: File '/home/jack/Sync/New 
-Documents/Projects/hackathons/agent_roi/demo/humaneval/op_get_positive/tes
-  •  premature_full_suite: Full test suite run at T=13.9s by 'reproducer' before
+  •  premature_full_suite: Full test suite run at T=8.9s by 'reproducer' before 
+target test confirmed passing (never).
+  •  premature_full_suite: Full test suite run at T=10.8s by 'patch_agent' 
+before target test confirmed passing (never).
+  •  premature_full_suite: Full test suite run at T=14.4s by 'reproducer' before
+target test confirmed passing (never).
+  •  premature_full_suite: Full test suite run at T=59.5s by 'verifier' before 
 target test confirmed passing (never).
   •  bad_routing: Patch agent started at T=0.0s before reproducer confirmed 
 failure (never confirmed).
 
-Judge insight: The swarm completely failed to produce a patch despite a 
-trivially simple bug, with agents working in disconnected silos and suffering 
-from 7 blocked actions that prevented meaningful progress.
+Judge insight: The swarm completely failed to fix a trivial one-character bug 
+despite 75 seconds of activity, with patch_agent starting before reproducer 
+confirmed failure and no actual patch being produced.
 
-Retrospective: # Retrospective: get_positive Bug Fix (ROI: 0.03)
+Retrospective: # Retrospective: get_positive Bug Fix (ROI: 0.29)
 
 ## What Went Well
-- Agents successfully identified and read the relevant files (solution.py, 
-test_solution.py)
-- The bug location was trivial to find — a one-character fix (`-1` → `0`)
+- Suite passed (no regressions introduced)
+- Token usage was relatively low (2205)
+- Agents correctly identified the target file
 
-## Key Waste Patterns and Impact
+## Key Waste Patterns and Their Impact
 
-**1. Bad Routing (CRITICAL):*
+**1. Bad Routing (CRITICAL):** patch_agent launched at T=0s w
 
 Report written → /home/jack/Sync/New 
 Documents/Projects/hackathons/agent_roi/demo/results_humaneval/t1a_run2_pytest_a
-ssertione_run001_b14922_roi_report.json
+ssertione_run016_274986_roi_report.json

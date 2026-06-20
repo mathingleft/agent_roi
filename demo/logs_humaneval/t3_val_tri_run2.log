@@ -9,52 +9,50 @@
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 ╭────────────────────────────── AgentROI Result ───────────────────────────────╮
-│ Composite ROI: 0.200    run_id=t3_val_t_pytest_assertione_run001_b98276      │
+│ Composite ROI: 0.335    run_id=t3_val_t_pytest_assertione_run017_bf37e5      │
 │ trajectory=t3_val_tri_run2                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
                               
   Metric               Value  
  ──────────────────────────── 
-  Wall time            92.3s  
-  Tokens (est)          3506  
-  File reads               6  
-  Duplicate reads          2  
-  Test runs                4  
+  Wall time            67.9s  
+  Tokens (est)          2080  
+  File reads               2  
+  Duplicate reads          1  
+  Test runs                3  
   Evidence published       0  
   Target test passed       ✗  
   Full suite passed        ✓  
   Test files edited    clean  
                               
-Waste events detected (6):
+Waste events detected (5):
   •  duplicate_file_read: File '/home/jack/Sync/New 
 Documents/Projects/hackathons/agent_roi/demo/humaneval/val_triangle/soluti
-  •  premature_full_suite: Full test suite run at T=8.5s by 'reproducer' before 
+  •  premature_full_suite: Full test suite run at T=14.1s by 'reproducer' before
 target test confirmed passing (never).
-  •  premature_full_suite: Full test suite run at T=42.2s by 'verifier' before 
+  •  premature_full_suite: Full test suite run at T=36.7s by 'verifier' before 
 target test confirmed passing (never).
-  •  premature_full_suite: Full test suite run at T=66.0s by 'verifier' before 
-target test confirmed passing (never).
-  •  premature_full_suite: Full test suite run at T=67.3s by 'verifier' before 
+  •  premature_full_suite: Full test suite run at T=52.5s by 'verifier' before 
 target test confirmed passing (never).
   •  bad_routing: Patch agent started at T=0.0s before reproducer confirmed 
 failure (never confirmed).
 
-Judge insight: The swarm failed completely—target test never passed, no patch 
-was produced, and agents worked in chaotic parallel with duplicated reads and 
-premature suite runs.
+Judge insight: The swarm failed completely: target test never passed, no patch 
+was produced (0 diff lines), and agents ran in parallel without proper 
+sequencing or evidence sharing.
 
-Retrospective: # Retrospective: triangle_area Bug Fix (ROI: 0.20)
+Retrospective: # Retrospective: triangle_area() Bug Fix (ROI: 0.34)
 
 ## What Went Well
-- The test suite infrastructure ran without errors
-- Agents successfully read the target file (solution.py)
-- Wall time stayed under 2 minutes
+- Full test suite passed (no regressions introduced)
+- Wall time was reasonable at 67.9 seconds
+- Token usage was modest at 2,080
 
-## Key Waste Patterns and Their Impact
+## Key Waste Patterns and Impact
 
-**1. Chaotic Parallel Execution (Critical)**
-P
+**1. Broken Agent Sequencing (CRITICAL)**
+- `patch_agent` start
 
 Report written → /home/jack/Sync/New 
 Documents/Projects/hackathons/agent_roi/demo/results_humaneval/t3_val_t_pytest_a
-ssertione_run001_b98276_roi_report.json
+ssertione_run017_bf37e5_roi_report.json

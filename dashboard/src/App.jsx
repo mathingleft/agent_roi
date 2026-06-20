@@ -125,6 +125,7 @@ export default function App() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [selectedRun, setSelectedRun] = useState(null)
+  const [tab, setTab] = useState('demo')
 
   useEffect(() => {
     fetch('/summary.json')
@@ -187,8 +188,6 @@ export default function App() {
 
   const axisStyle = { fill: 'var(--text-dim)', fontSize: 11 }
   const gridStyle = { strokeDasharray: '3 3', stroke: 'var(--border)' }
-
-  const [tab, setTab] = useState('demo')
 
   return (
     <div style={{ maxWidth: 1280, margin: '0 auto', padding: '32px 24px' }}>

@@ -302,6 +302,29 @@
             "created_at": "2026-06-20T13:07:52.286395+00:00",
             "updated_at": "2026-06-20T13:07:52.286414+00:00",
             "metadata": {}
+          },
+          {
+            "id": "3e4cd9b5c884",
+            "entry_type": "routing_rule",
+            "content": {
+              "patch_agent_start_condition": "reproducer has executed target test AND confirmed specific test failure with error message captured",
+              "full_suite_condition": "target test passes in isolation AND patch has been reviewed for correctness",
+              "agent_order": [
+                "reproducer",
+                "patch_agent",
+                "verifier"
+              ],
+              "first_agent": "reproducer",
+              "second_agent": "patch_agent"
+            },
+            "trajectory_id": "t1a_run2",
+            "task_signature_key": "pytest|assertionerror|op_get_positive",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T14:15:20.253060+00:00",
+            "updated_at": "2026-06-20T14:15:20.253079+00:00",
+            "metadata": {}
           }
         ],
         "prompt_patches": {
@@ -313,10 +336,10 @@
               "trajectory_id": "t1a_run2",
               "task_signature_key": "pytest|assertionerror|op_get_positive",
               "agent_role": "reproducer",
-              "helpful_count": 0,
+              "helpful_count": 1,
               "harmful_count": 0,
               "created_at": "2026-06-20T13:07:52.268430+00:00",
-              "updated_at": "2026-06-20T13:07:52.268457+00:00",
+              "updated_at": "2026-06-20T14:15:20.240851+00:00",
               "metadata": {}
             },
             {
@@ -343,6 +366,19 @@
               "harmful_count": 0,
               "created_at": "2026-06-20T13:07:52.279742+00:00",
               "updated_at": "2026-06-20T13:07:52.279775+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "e5e804ba3a99",
+              "entry_type": "prompt_patch",
+              "content": "Output a clear FAILURE CONFIRMED or FAILURE NOT CONFIRMED status message that other agents can wait for before proceeding.",
+              "trajectory_id": "t1a_run2",
+              "task_signature_key": "pytest|assertionerror|op_get_positive",
+              "agent_role": "reproducer",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T14:15:20.242907+00:00",
+              "updated_at": "2026-06-20T14:15:20.242921+00:00",
               "metadata": {}
             }
           ],
@@ -385,6 +421,45 @@
               "created_at": "2026-06-20T13:07:52.283320+00:00",
               "updated_at": "2026-06-20T13:07:52.283337+00:00",
               "metadata": {}
+            },
+            {
+              "id": "b3a9f3626ae5",
+              "entry_type": "prompt_patch",
+              "content": "Do not begin generating patches until the reproducer agent has explicitly confirmed the failure exists.",
+              "trajectory_id": "t1a_run2",
+              "task_signature_key": "pytest|assertionerror|op_get_positive",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T14:15:20.244664+00:00",
+              "updated_at": "2026-06-20T14:15:20.244684+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "82194f686715",
+              "entry_type": "prompt_patch",
+              "content": "For simple one-character or single-operator bugs (like `> -1` vs `> 0`), generate and apply the fix immediately rather than over-analyzing.",
+              "trajectory_id": "t1a_run2",
+              "task_signature_key": "pytest|assertionerror|op_get_positive",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T14:15:20.246307+00:00",
+              "updated_at": "2026-06-20T14:15:20.246318+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "b08aaefe7c0c",
+              "entry_type": "prompt_patch",
+              "content": "Run only the specific failing test after applying a patch, not the full test suite, to quickly validate the fix.",
+              "trajectory_id": "t1a_run2",
+              "task_signature_key": "pytest|assertionerror|op_get_positive",
+              "agent_role": "patch_agent",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T14:15:20.248154+00:00",
+              "updated_at": "2026-06-20T14:15:20.248177+00:00",
+              "metadata": {}
             }
           ],
           "verifier": [
@@ -413,6 +488,32 @@
               "created_at": "2026-06-20T13:07:52.285326+00:00",
               "updated_at": "2026-06-20T13:07:52.285335+00:00",
               "metadata": {}
+            },
+            {
+              "id": "093f20c35183",
+              "entry_type": "prompt_patch",
+              "content": "Before reading files that other agents have already analyzed, check if the patch was actually applied and focus verification on the changed code.",
+              "trajectory_id": "t1a_run2",
+              "task_signature_key": "pytest|assertionerror|op_get_positive",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T14:15:20.249824+00:00",
+              "updated_at": "2026-06-20T14:15:20.249834+00:00",
+              "metadata": {}
+            },
+            {
+              "id": "45a10eb32024",
+              "entry_type": "prompt_patch",
+              "content": "Run the specific target test first to confirm the fix before running the full test suite.",
+              "trajectory_id": "t1a_run2",
+              "task_signature_key": "pytest|assertionerror|op_get_positive",
+              "agent_role": "verifier",
+              "helpful_count": 0,
+              "harmful_count": 0,
+              "created_at": "2026-06-20T14:15:20.251414+00:00",
+              "updated_at": "2026-06-20T14:15:20.251423+00:00",
+              "metadata": {}
             }
           ]
         },
@@ -440,10 +541,10 @@
             "trajectory_id": "t1a_run2",
             "task_signature_key": "pytest|assertionerror|op_get_positive",
             "agent_role": "",
-            "helpful_count": 0,
+            "helpful_count": 1,
             "harmful_count": 0,
             "created_at": "2026-06-20T13:07:52.288642+00:00",
-            "updated_at": "2026-06-20T13:07:52.288661+00:00",
+            "updated_at": "2026-06-20T14:15:20.254896+00:00",
             "metadata": {
               "waste_type": "duplicate_file_read",
               "severity": "medium"
@@ -456,10 +557,10 @@
             "trajectory_id": "t1a_run2",
             "task_signature_key": "pytest|assertionerror|op_get_positive",
             "agent_role": "",
-            "helpful_count": 0,
+            "helpful_count": 2,
             "harmful_count": 0,
             "created_at": "2026-06-20T13:07:52.289745+00:00",
-            "updated_at": "2026-06-20T13:07:52.289762+00:00",
+            "updated_at": "2026-06-20T14:15:20.260240+00:00",
             "metadata": {
               "waste_type": "premature_full_suite",
               "severity": "high"
@@ -472,12 +573,44 @@
             "trajectory_id": "t1a_run2",
             "task_signature_key": "pytest|assertionerror|op_get_positive",
             "agent_role": "",
-            "helpful_count": 0,
+            "helpful_count": 1,
             "harmful_count": 0,
             "created_at": "2026-06-20T13:07:52.291032+00:00",
-            "updated_at": "2026-06-20T13:07:52.291054+00:00",
+            "updated_at": "2026-06-20T14:15:20.263809+00:00",
             "metadata": {
               "waste_type": "bad_routing",
+              "severity": "high"
+            }
+          },
+          {
+            "id": "c3d6c5f95e0e",
+            "entry_type": "waste_pattern",
+            "content": "Full test suite run at T=10.8s by 'patch_agent' before target test confirmed passing (never).",
+            "trajectory_id": "t1a_run2",
+            "task_signature_key": "pytest|assertionerror|op_get_positive",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T14:15:20.258430+00:00",
+            "updated_at": "2026-06-20T14:15:20.258438+00:00",
+            "metadata": {
+              "waste_type": "premature_full_suite",
+              "severity": "high"
+            }
+          },
+          {
+            "id": "93e61b03c815",
+            "entry_type": "waste_pattern",
+            "content": "Full test suite run at T=59.5s by 'verifier' before target test confirmed passing (never).",
+            "trajectory_id": "t1a_run2",
+            "task_signature_key": "pytest|assertionerror|op_get_positive",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T14:15:20.262021+00:00",
+            "updated_at": "2026-06-20T14:15:20.262029+00:00",
+            "metadata": {
+              "waste_type": "premature_full_suite",
               "severity": "high"
             }
           }
@@ -494,6 +627,19 @@
             "harmful_count": 0,
             "created_at": "2026-06-20T13:07:52.292406+00:00",
             "updated_at": "2026-06-20T13:07:52.292420+00:00",
+            "metadata": {}
+          },
+          {
+            "id": "f4e3f9db6ba3",
+            "entry_type": "high_roi_context",
+            "content": "Judge insight: The swarm completely failed to fix a trivial one-character bug despite 75 seconds of activity, with patch_agent starting before reproducer confirmed failure and no actual patch being produced.",
+            "trajectory_id": "t1a_run2",
+            "task_signature_key": "pytest|assertionerror|op_get_positive",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T14:15:20.265501+00:00",
+            "updated_at": "2026-06-20T14:15:20.265507+00:00",
             "metadata": {}
           }
         ],
@@ -516,6 +662,26 @@
             "harmful_count": 0,
             "created_at": "2026-06-20T13:07:52.293639+00:00",
             "updated_at": "2026-06-20T13:07:52.293651+00:00",
+            "metadata": {}
+          },
+          {
+            "id": "b79309356d63",
+            "entry_type": "episodic_record",
+            "content": {
+              "run_id": "t1a_run2_pytest_assertione_run016_274986",
+              "roi_score": 0.294,
+              "wall_time_sec": 75.66,
+              "tokens": 2205,
+              "target_pass": false,
+              "retrospective_snippet": "# Retrospective: get_positive Bug Fix (ROI: 0.29)\n\n## What Went Well\n- Suite passed (no regressions introduced)\n- Token usage was relatively low (2205)\n- Agents correctly identified the target file\n\n## Key Waste Patterns and Their Impact\n\n**1. Bad Routing (CRITICAL):** patch_agent launched at T=0s w"
+            },
+            "trajectory_id": "t1a_run2",
+            "task_signature_key": "pytest|assertionerror|op_get_positive",
+            "agent_role": "",
+            "helpful_count": 0,
+            "harmful_count": 0,
+            "created_at": "2026-06-20T14:15:20.267269+00:00",
+            "updated_at": "2026-06-20T14:15:20.267275+00:00",
             "metadata": {}
           }
         ]
@@ -902,6 +1068,19 @@
         "harmful_count": 0,
         "created_at": "2026-06-20T13:12:09.176654+00:00",
         "updated_at": "2026-06-20T13:12:09.176671+00:00",
+        "metadata": {}
+      },
+      {
+        "id": "f4e3f9db6ba3",
+        "entry_type": "high_roi_context",
+        "content": "Judge insight: The swarm completely failed to fix a trivial one-character bug despite 75 seconds of activity, with patch_agent starting before reproducer confirmed failure and no actual patch being produced.",
+        "trajectory_id": "t1a_run2",
+        "task_signature_key": "pytest|assertionerror|op_get_positive",
+        "agent_role": "",
+        "helpful_count": 0,
+        "harmful_count": 0,
+        "created_at": "2026-06-20T14:15:20.265501+00:00",
+        "updated_at": "2026-06-20T14:15:20.265507+00:00",
         "metadata": {}
       }
     ]
